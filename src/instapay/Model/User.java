@@ -10,8 +10,7 @@ public class User {
     private String userType;
     private boolean verified;
 
-    public User(int userId, String username, String password, String mobileNumber, String bankAccount, String walletProvider, String userType, boolean verified) {
-        this.userId = userId;
+    public User(String username, String password, String mobileNumber, String bankAccount, String walletProvider, String userType, boolean verified) {
         this.username = username;
         this.password = password;
         this.mobileNumber = mobileNumber;
@@ -20,7 +19,10 @@ public class User {
         this.userType = userType;
         this.verified = verified;
     }
-
+    public User(int id,String username, String password, String mobileNumber, String bankAccount, String walletProvider, String userType, boolean verified) {
+        this(username, password, mobileNumber, bankAccount, walletProvider, userType, verified);
+        this.userId = id;
+    }
 
     public String getUsername() {
         return username;
@@ -75,7 +77,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
+                "userId=" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +

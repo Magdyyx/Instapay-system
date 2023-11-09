@@ -48,16 +48,15 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public void addUser(User user) {
-        String query = "INSERT INTO [User] (UserID,Username, Password, MobileNumber, BankAccount, WalletProvider, UserType, Verified) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
+        String query = "INSERT INTO [User] (Username, Password, MobileNumber, BankAccount, WalletProvider, UserType, Verified) VALUES (?, ?, ?, ?, ?, ?,?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, user.getUserId());
-            preparedStatement.setString(2, user.getUsername());
-            preparedStatement.setString(3, user.getPassword());
-            preparedStatement.setString(4, user.getMobileNumber());
-            preparedStatement.setString(5, user.getBankAccount());
-            preparedStatement.setString(6, user.getWalletProvider());
-            preparedStatement.setString(7, user.getUserType());
-            preparedStatement.setBoolean(8, user.isVerified());
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getMobileNumber());
+            preparedStatement.setString(4, user.getBankAccount());
+            preparedStatement.setString(5, user.getWalletProvider());
+            preparedStatement.setString(6, user.getUserType());
+            preparedStatement.setBoolean(7, user.isVerified());
 
 
             preparedStatement.executeUpdate();
