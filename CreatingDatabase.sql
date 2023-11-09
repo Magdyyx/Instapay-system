@@ -1,8 +1,6 @@
--- Use the existing database
 USE instapay;
 
--- Create User Table
-CREATE TABLE UserTable (
+CREATE TABLE User (
     UserID INT PRIMARY KEY,
     Username VARCHAR(255) NOT NULL,
     Password VARCHAR(255) NOT NULL,
@@ -13,25 +11,20 @@ CREATE TABLE UserTable (
     Verified BIT NOT NULL
 );
 
--- Create BankAccount Table
-CREATE TABLE BankAccountTable (
+CREATE TABLE BankAccount (
     AccountNumber INT PRIMARY KEY,
     UserID INT FOREIGN KEY REFERENCES UserTable(UserID),
     BankName VARCHAR(50) NOT NULL,
-    MobileNumber VARCHAR(15) NOT NULL
 );
 
--- Create WalletProvider Table
-CREATE TABLE WalletProviderTable (
+CREATE TABLE WalletProvider (
     ProviderID INT PRIMARY KEY,
     UserID INT FOREIGN KEY REFERENCES UserTable(UserID),
     ProviderName VARCHAR(50) NOT NULL,
-    MobileNumber VARCHAR(15) NOT NULL
 );
 
 
--- Create UtilityBill Table
-CREATE TABLE UtilityBillTable (
+CREATE TABLE UtilityBill (
     BillID INT PRIMARY KEY,
     UserID INT FOREIGN KEY REFERENCES UserTable(UserID),
     BillType VARCHAR(50) NOT NULL,

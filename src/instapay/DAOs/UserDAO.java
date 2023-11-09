@@ -16,7 +16,7 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public User getUserById(int userId) {
-        String query = "SELECT * FROM User WHERE UserID = ?";
+        String query = "SELECT * FROM [User] WHERE UserID = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -33,7 +33,7 @@ public class UserDAO implements IUserDAO {
     @Override
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM User";
+        String query = "SELECT * FROM [User]";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -48,7 +48,7 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public void addUser(User user) {
-        String query = "INSERT INTO User (UserID,Username, Password, MobileNumber, BankAccount, WalletProvider, UserType, Verified) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO [User] (UserID,Username, Password, MobileNumber, BankAccount, WalletProvider, UserType, Verified) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, user.getUserId());
             preparedStatement.setString(2, user.getUsername());
@@ -68,15 +68,37 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public void updateUser(User user) {
+        String query = "UPDATE [User] SET Username = ?, Password = ?, MobileNumber = ?, BankAccount = ?, WalletProvider = ?, UserType = ?, Verified = ? WHERE UserID = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getMobileNumber());
+            preparedStatement.setString(4, user.getBankAccount());
+            preparedStatement.setString(5, user.getWalletProvider());
+            preparedStatement.setString(6, user.getUserType());
+            preparedStatement.setBoolean(7, user.isVerified());
+            preparedStatement.setInt(8, user.getUserId());
 
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void deleteUser(int userId) {
-
+        String query = "DELETE FROM [User] WHERE UserID = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, userId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private User mapResultSetToUser(ResultSet resultSet) throws SQLException {
+
+    @Override
+    public User mapResultSetToUser(ResultSet resultSet) throws SQLException {
         return new User(
                 resultSet.getInt("UserID"),
                 resultSet.getString("Username"),

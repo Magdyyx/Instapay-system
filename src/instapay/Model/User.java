@@ -72,5 +72,19 @@ public class User {
         this.verified = verified;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", bankAccount='" + bankAccount + '\'' +
+                ", walletProvider='" + walletProvider + '\'' +
+                ", userType='" + userType + '\'' +
+                ", verified=" + verified +
+                '}';
+    }
+
 
 }

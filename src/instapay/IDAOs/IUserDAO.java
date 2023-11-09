@@ -1,4 +1,6 @@
 package instapay.IDAOs;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import instapay.Model.User;
 
@@ -8,4 +10,5 @@ public interface IUserDAO {
     void addUser(User user);
     void updateUser(User user);
     void deleteUser(int userId);
+    User mapResultSetToUser(ResultSet resultSet) throws SQLException;
 }

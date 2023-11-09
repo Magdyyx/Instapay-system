@@ -2,6 +2,8 @@ package instapay.DAOs;
 import instapay.IDAOs.IUtilityBillDAO;
 import instapay.Model.UtilityBill;
 
+import java.util.List;
+
 public class UtilityBillDAO implements IUtilityBillDAO {
     @Override
     public UtilityBill getUtilityBillById(int billId) {
