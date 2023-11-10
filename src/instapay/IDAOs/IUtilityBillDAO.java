@@ -1,8 +1,8 @@
 package instapay.IDAOs;
 
-import instapay.Model.UtilityBill;
-
 import java.util.List;
+
+import instapay.Model.UtilityBillsModels.UtilityBill;
 
 public interface IUtilityBillDAO {
     UtilityBill getUtilityBillById(int billId);

@@ -36,12 +36,11 @@ public class BankAccountDAO implements IBankAccountDAO {
 
     @Override
     public void addBankAccount(BankAccount bankAccount) {
-        String query = "INSERT INTO BankAccount (accountNumber, userId, bankName) VALUES (?, ?, ?)";
+        String query = "INSERT INTO BankAccount (accountNumber, userId, bankName) VALUES (?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            preparedStatement.setInt(1, bankAccount.getAccountNumber());
-            preparedStatement.setInt(2, bankAccount.getUserId());
-            preparedStatement.setString(3, bankAccount.getBankName());
+            preparedStatement.setInt(1, bankAccount.getUserId());
+            preparedStatement.setString(2, bankAccount.getBankName());
 
             preparedStatement.executeUpdate();
 
