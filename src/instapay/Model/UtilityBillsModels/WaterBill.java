@@ -10,21 +10,6 @@ public class WaterBill extends UtilityBill {
     }
 
     @Override
-    public void AddBillDB() {
-        return;
-    }
-
-    @Override
-    public void UpdateBillDB() {
-        return;
-    }
-
-    @Override
-    public void DeleteBillDB() {
-        return;
-    }
-
-    @Override
     public String details() {
         return "";
     }

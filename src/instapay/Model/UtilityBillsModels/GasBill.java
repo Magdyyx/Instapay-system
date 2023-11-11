@@ -9,20 +9,6 @@ public class GasBill extends UtilityBill {
         super(billId, userId, isPaid, billAmount);
     }
 
-    @Override
-    public void AddBillDB() {
-        return;
-    }
-
-    @Override
-    public void UpdateBillDB() {
-        return;
-    }
-
-    @Override
-    public void DeleteBillDB() {
-        return;
-    }
 
     @Override
     public String details() {

@@ -21,9 +21,6 @@ public abstract class UtilityBill {
         this.billAmount = billAmount;
     }
 
-    public abstract void AddBillDB();
-    public abstract void UpdateBillDB();
-    public abstract void DeleteBillDB();
     public abstract String details();
 
     public int getBillId() {
@@ -42,6 +39,6 @@ public abstract class UtilityBill {
     public void payBill() {
         isPaid = true;
 
-        UpdateBillDB();
+        // UpdateBillDB();
     }
 }
