@@ -1,0 +1,13 @@
+Design issues:
+	- boolean return values could be replace with OperationResponse objects
+	- It might be better to name fake endpoints with Mock prefix
+	- Might pass to TransferFacility methods a user object instead of id
+	  And let the controller handle the Repository query.
+
+What Next?
+	- Everyone please study Spring Boot (even a little intro and dummy app)
+	- I will try to add Dependency Injection
+	- I will try to take on ALL in-memory repositories implementation
+	- We need to design the Register/Login componenet as well
+
+	- THAT SHOULD COVER THE REQUIRMENTS! HOORAY!
