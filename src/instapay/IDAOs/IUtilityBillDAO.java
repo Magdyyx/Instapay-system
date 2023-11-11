@@ -2,7 +2,7 @@ package instapay.IDAOs;
 
 import java.util.List;
 
-import instapay.Model.UtilityBillsModels.UtilityBill;
+import instapay.Abstractions.UtilityBill;
 
 public interface IUtilityBillDAO {
     UtilityBill getUtilityBillById(int billId);

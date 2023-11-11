@@ -1,11 +1,13 @@
-package instapay.Model.UtilityBillsModels;
+package instapay.DataAccess.Models;
 
-public class ElectricityBill extends UtilityBill {
-    public ElectricityBill(int userId) {
+import instapay.Abstractions.UtilityBill;
+
+public class WaterBill extends UtilityBill {
+    public WaterBill(int userId) {
         super(userId);
     }
 
-    public ElectricityBill(int billId, int userId, boolean isPaid, float billAmount) {
+    public WaterBill(int billId, int userId, boolean isPaid, float billAmount) {
         super(billId, userId, isPaid, billAmount);
     }
 

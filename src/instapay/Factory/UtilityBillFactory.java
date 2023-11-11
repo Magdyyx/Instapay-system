@@ -5,8 +5,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 
+import instapay.Abstractions.UtilityBill;
+import instapay.DataAccess.Models.ElectricityBill;
+import instapay.DataAccess.Models.GasBill;
+import instapay.DataAccess.Models.WaterBill;
 import instapay.Enums.BillsEnum;
-import instapay.Model.UtilityBillsModels.*;
 
 public class UtilityBillFactory {
     private Map<BillsEnum, Function<Integer, UtilityBill>> stateDictionary = new HashMap<>();

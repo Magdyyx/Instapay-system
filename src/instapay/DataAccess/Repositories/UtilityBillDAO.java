@@ -1,6 +1,6 @@
-package instapay.DAOs;
+package instapay.DataAccess.Repositories;
 import instapay.IDAOs.IUtilityBillDAO;
-import instapay.Model.UtilityBillsModels.UtilityBill;
+import instapay.Abstractions.UtilityBill;
 
 import java.util.List;
 

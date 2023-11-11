@@ -1,9 +1,7 @@
 package instapay;
 
-import instapay.DAOs.UserDAO;
-import instapay.Model.User;
-
-import java.util.List;
+import instapay.DataAccess.Repositories.UserDAO;
+import instapay.DataAccess.Models.User;
 
 public class Main {
     public static void main(String[] args) {

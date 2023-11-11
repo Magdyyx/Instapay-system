@@ -1,5 +1,5 @@
 package instapay.IDAOs;
-import instapay.Model.WalletProvider;
+import instapay.DataAccess.Models.WalletProvider;
 public interface IWalletProviderDAO {
     WalletProvider getWalletProviderByUserId(int userId);
     void addWalletProvider(WalletProvider walletProvider);

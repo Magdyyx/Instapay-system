@@ -1,6 +1,6 @@
 package instapay.IDAOs;
 
-import instapay.Model.BankAccount;
+import instapay.DataAccess.Models.BankAccount;
 
 public interface IBankAccountDAO {
     BankAccount getBankAccountByUserId(int userId);

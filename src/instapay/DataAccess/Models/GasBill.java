@@ -1,4 +1,6 @@
-package instapay.Model.UtilityBillsModels;
+package instapay.DataAccess.Models;
+
+import instapay.Abstractions.UtilityBill;
 
 public class GasBill extends UtilityBill {
     public GasBill(int userId) {

@@ -1,4 +1,4 @@
-package instapay.Model;
+package instapay.DataAccess.Models;
 
 public class BankAccount {
     private int accountNumber;

@@ -1,8 +1,8 @@
-package instapay.DAOs;
+package instapay.DataAccess.Repositories;
 
 import instapay.DatabaseConnector;
 import instapay.IDAOs.IBankAccountDAO;
-import instapay.Model.BankAccount;
+import instapay.DataAccess.Models.BankAccount;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
