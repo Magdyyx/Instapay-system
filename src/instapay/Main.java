@@ -8,8 +8,10 @@ import instapay.Modules.Authentication.WalletAuthentication;
 import instapay.Modules.BillPayment.Bill;
 import instapay.Modules.BillPayment.BillPaymentService;
 import instapay.Modules.BillPayment.GasBill;
+import instapay.Modules.MockedAPIs.API;
 import instapay.Modules.MockedAPIs.BankMockedAPI;
 import instapay.Modules.MockedAPIs.WalletMockedAPI;
+import instapay.Modules.Providers.ProviderEndpoint;
 import instapay.Modules.TransferStrategy.TransferToInstapayAccount;
 import instapay.Modules.User.User;
 
@@ -97,6 +99,10 @@ public class Main {
 
             if (BankAuthentication.Authenticate(accountNumber, bankName, NationalID)){
                 System.out.println("Authentication successful!");
+                //TODO TO BE IMPLEMENTED
+//                API bankAPI = apifactory(bankName);
+//                ProviderEndpoint Provider = new ProviderEndpoint(accountNumber,bank name,bankAPI);
+//                User user = new User('2',NationalID,username,password,phoneNumber,Provider,"BankUser",true);
                 System.out.println("Registration successful! You can now log in.");
                 loginUser();
             } else {
@@ -126,13 +132,18 @@ public class Main {
         String otp = scanner.nextLine();
         if (NewUserAuthentication.Authenticate(phoneNumber, otp)) {
             System.out.println("Authentication successful!");
-            System.out.println("Enter your Wallet Provider:");
-            String walletProvider = scanner.nextLine();
+            String accountNumber = phoneNumber; // TO BE EDITED
+            System.out.println("Enter your Wallet name:");
+            String walletName = scanner.nextLine();
+            System.out.println("Enter your NationalID:");
+            String NationalID = scanner.nextLine();
 
-            System.out.println("Enter your balance:");
-            int balance = scanner.nextInt();
-            if (WalletAuthentication.Authenticate(walletProvider, balance)){
+            if (WalletAuthentication.Authenticate(phoneNumber)){
                 System.out.println("Authentication successful!");
+                //TODO TO BE IMPLEMENTED
+//                API walletAPI = apifactory(walletName);
+//                ProviderEndpoint Provider = new ProviderEndpoint(accountNumber,walletName,walletAPI);
+//                User user = new User('2',NationalID,username,password,phoneNumber,Provider,"WalletUser",true);
                 System.out.println("Registration successful! You can now log in.");
                 loginUser();
             } else {
@@ -144,8 +155,6 @@ public class Main {
         }else {
             System.out.println("Authentication failed. Exiting registration...");
         }
-
-
 
 
     }

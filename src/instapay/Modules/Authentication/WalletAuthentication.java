@@ -9,7 +9,7 @@ public class WalletAuthentication implements Authentication {
         this.walletAPI = walletAPI;
     }
 
-    public static boolean Authenticate(String walletProvider,int balance) {
+    public static boolean Authenticate(String phonenumber) {
         return true;
     }
 

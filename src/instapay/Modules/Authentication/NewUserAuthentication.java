@@ -32,7 +32,7 @@ public class NewUserAuthentication {
             Message message = Message.creator(
                     new com.twilio.type.PhoneNumber("+" + phoneNumber),
                     new com.twilio.type.PhoneNumber("+" + TWILIO_PHONE_NUMBER),
-                    "By2olk mara wa7ed 3ml Design Pattern we smah SOOODA "
+                    "Your OTP is " + otp
             ).create();
 
             System.out.println("OTP sent successfully: " + message.getSid());
