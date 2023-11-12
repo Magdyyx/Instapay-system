@@ -1,6 +1,5 @@
 package instapay.Endpoints;
 
-import instapay.Abstractions.MoneyAccount;
 import instapay.Abstractions.ProviderEndpoint;
 
 public class CIBEndpoint extends ProviderEndpoint {

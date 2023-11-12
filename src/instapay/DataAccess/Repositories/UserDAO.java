@@ -103,10 +103,8 @@
 //                resultSet.getString("Username"),
 //                resultSet.getString("Password"),
 //                resultSet.getString("MobileNumber"),
-//                //resultSet.getString("BankAccount"),
-//                //resultSet.getString("WalletProvider"),
-//                //resultSet.getString("UserType"),
-//                //resultSet.getBoolean("Verified")
+//                resultSet.getString("UserType"),
+//                resultSet.getBoolean("Verified")
 //        );
 //    }
 //}

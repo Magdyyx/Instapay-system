@@ -13,10 +13,10 @@ public class Main {
         ProviderEndpoint CIBReciever = new CIBEndpoint(1234, 1234, "CIB", 200);
 
 
-        User daddy = new User(123, "daddy", "daddy",
+        User daddy = new User(123, "303030","daddy", "daddy",
                 "123", CIBSender, "Bank", true);
 
-        User son = new User(1234, "son", "son",
+        User son = new User(1234, "505050", "son", "son",
                 "124", CIBReciever, "Bank", true);
         MoneyTransferFacility moneyTransferFacility = new MoneyTransferFacility();
         moneyTransferFacility.TransferMoney(daddy, son, 300);

@@ -2,15 +2,15 @@ package instapay.Abstractions;
 
 public abstract class ProviderEndpoint {
     private int accountNumber;
-    private int userId;
+    private int userNationalId;
     private String moneyProviderName;
     protected double balance;
 
-    public ProviderEndpoint(int accountNumber, int userId,
+    public ProviderEndpoint(int accountNumber, int userNationalId,
                             String moneyProviderName, double balance)
     {
         this.accountNumber = accountNumber;
-        this.userId = userId;
+        this.userNationalId = userNationalId;
         this.moneyProviderName = moneyProviderName;
         this.balance = balance;
     }
@@ -19,7 +19,7 @@ public abstract class ProviderEndpoint {
     }
 
     public int getUserId() {
-        return userId;
+        return userNationalId;
     }
 
     public String getMoneyProviderName() {
