@@ -1,6 +1,5 @@
 package instapay.DAOs;
 import instapay.IDAOs.IWalletProviderDAO;
-import instapay.Model.User;
 import instapay.Model.WalletProvider;
 
 public class WalletProviderDAO implements IWalletProviderDAO {

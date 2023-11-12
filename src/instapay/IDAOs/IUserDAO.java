@@ -2,7 +2,7 @@ package instapay.IDAOs;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import instapay.Model.User;
+import instapay.Modules.User.User;
 
 public interface IUserDAO {
     User getUserById(int userId);
