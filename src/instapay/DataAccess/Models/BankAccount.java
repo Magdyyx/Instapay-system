@@ -1,6 +1,8 @@
 package instapay.DataAccess.Models;
 
-public class BankAccount {
+import instapay.Abstractions.MoneyAccount;
+
+public class BankAccount implements MoneyAccount {
     private int accountNumber;
     private int userId;
     private String bankName;
@@ -19,6 +21,12 @@ public class BankAccount {
     public String getBankName() {
         return this.bankName;
     }
+
+    @Override
+    public String getAccountProvider() {
+        return this.bankName;
+    }
+
     public void setAccountNumber(int accountNumber) {
         this.accountNumber = accountNumber;
     }
@@ -28,6 +36,4 @@ public class BankAccount {
     public void setBankName(String bankName) {
         this.bankName = bankName;
     }
-
-
 }

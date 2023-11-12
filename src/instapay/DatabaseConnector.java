@@ -13,8 +13,8 @@ public class DatabaseConnector {
     public static Connection getConnection() {
         if (connection == null) {
             try {
-                String url = "jdbc:sqlserver://DESKTOP-5G3H0IA:1433;databaseName=instapay;encrypt=false;trustServerCertificate=false;loginTimeout=30;";
-                String user = "admin";
+                String url = "jdbc:sqlserver://DESKTOP-0O2K3TT:1433;databaseName=instapay;encrypt=false;trustServerCertificate=false;loginTimeout=30;";
+                String user = "daly";
                 String password = "12345";
                 connection = DriverManager.getConnection(url, user, password);
             } catch (SQLException e) {

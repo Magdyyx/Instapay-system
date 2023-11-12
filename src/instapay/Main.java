@@ -1,11 +1,28 @@
 package instapay;
 
-import instapay.DataAccess.Repositories.UserDAO;
+import instapay.Abstractions.ProviderEndpoint;
+//import instapay.DataAccess.Repositories.UserDAO;
 import instapay.DataAccess.Models.User;
+import instapay.Endpoints.CIBEndpoint;
+//import instapay.Enums.MoneyProvider;
+import instapay.TransferFacility.MoneyTransferFacility;
 
 public class Main {
     public static void main(String[] args) {
-        UserDAO userDAO = new UserDAO();
+        ProviderEndpoint CIBSender = new CIBEndpoint(123, 123, "CIB", 500);
+        ProviderEndpoint CIBReciever = new CIBEndpoint(1234, 1234, "CIB", 200);
+
+
+        User daddy = new User(123, "daddy", "daddy",
+                "123", CIBSender, "Bank", true);
+
+        User son = new User(1234, "son", "son",
+                "124", CIBReciever, "Bank", true);
+        MoneyTransferFacility moneyTransferFacility = new MoneyTransferFacility();
+        moneyTransferFacility.TransferMoney(daddy, son, 300);
+        System.out.println(daddy);
+        System.out.println(son);
+//        UserDAO userDAO = new UserDAO();
 //
 //        //Get a user by ID
 //        User userById = userDAO.getUserById(1);
@@ -16,9 +33,9 @@ public class Main {
 //        System.out.println("All users: " + allUsers);
 
 //        //Add a new user
-        User newUser = new User("newUser", "newPassword", "newEmail", "newPhone", "newAddress", "newCity",true );
-        userDAO.addUser(newUser);
-        System.out.println("User added: " + newUser);
+//        User newUser = new User("newUser", "newPassword", "newEmail", "newPhone", "newAddress", "newCity",true );
+//        userDAO.addUser(newUser);
+//        System.out.println("User added: " + newUser);
 //
 //        //Update user details
 //        User userToUpdate = userDAO.getUserById(2);

@@ -4,28 +4,34 @@ import instapay.Abstractions.ProviderEndpoint;
 
 public class AlahlyEndpoint extends ProviderEndpoint {
 
+    public AlahlyEndpoint(int accountNumber, int userId,
+                            String moneyProviderName, double balance) {
+        super(accountNumber, userId, moneyProviderName, balance);
+    }
+
     @Override
-    public boolean Credit(String accountId, int amount) {
+    public boolean Credit(int amount) {
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean Debit(String accountId, int amount) {
+    public boolean Debit(int amount) {
+
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean HasEnoughBalance(String accountId, int amount) {
+    public boolean HasEnoughBalance(int amount) {
         // TODO Auto-generated method stub
         return false;
     }
 
-    @Override
+    /*@Override
     public int GetBalance(String accountId) {
         // TODO Auto-generated method stub
         return 0;
-    }
+    }*/
 
 }

@@ -1,28 +1,38 @@
 package instapay.DataAccess.Models;
 
+import instapay.Abstractions.MoneyAccount;
+import instapay.Abstractions.ProviderEndpoint;
+
 public class User {
     private int userId;
     private String username;
     private String password;
     private String mobileNumber;
-    private String bankAccount;
-    private String walletProvider;
+
+    private ProviderEndpoint moneyProvider;
+    // private String moneyProvider;
+    // private String bankAccount;
+    // private String walletProvider;
     private String userType;
     private boolean verified;
 
-    public User(String username, String password, String mobileNumber, String bankAccount, String walletProvider, String userType, boolean verified) {
+    public User(int userID, String username, String password, String mobileNumber,
+                ProviderEndpoint moneyProvider, String userType, boolean verified)
+    {
+        this.userId = userID;
         this.username = username;
         this.password = password;
         this.mobileNumber = mobileNumber;
-        this.bankAccount = bankAccount;
-        this.walletProvider = walletProvider;
+        this.moneyProvider = moneyProvider;
+        //this.bankAccount = bankAccount;
+        //this.walletProvider = walletProvider;
         this.userType = userType;
         this.verified = verified;
     }
-    public User(int id,String username, String password, String mobileNumber, String bankAccount, String walletProvider, String userType, boolean verified) {
+    /*public User(int id,String username, String password, String mobileNumber, String bankAccount, String walletProvider, String userType, boolean verified) {
         this(username, password, mobileNumber, bankAccount, walletProvider, userType, verified);
         this.userId = id;
-    }
+    }*/
 
     public String getUsername() {
         return username;
@@ -39,15 +49,21 @@ public class User {
     public String getMobileNumber() {
         return mobileNumber;
     }
-    public String getBankAccount() {
-        return bankAccount;
-    }
-    public String getWalletProvider() {
-        return walletProvider;
-    }
+    //public String getBankAccount() {
+    //    return bankAccount;
+    //}
+    //public String getWalletProvider() {
+    //    return walletProvider;
+    //}
     public String getUserType() {
         return userType;
     }
+
+    public ProviderEndpoint getMoneyProvider() {
+        return moneyProvider;
+    }
+
+    public String getMoneyProviderName() { return moneyProvider.getMoneyProviderName();}
     public boolean isVerified() {
         return verified;
     }
@@ -57,12 +73,12 @@ public class User {
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
-    public void setBankAccount(String bankAccount) {
-        this.bankAccount = bankAccount;
-    }
-    public void setWalletProvider(String walletProvider) {
-        this.walletProvider = walletProvider;
-    }
+    //public void setBankAccount(String bankAccount) {
+    //    this.bankAccount = bankAccount;
+    //}
+    //public void setWalletProvider(String walletProvider) {
+    //    this.walletProvider = walletProvider;
+    //}
     public void setUserType(String userType) {
         this.userType = userType;
     }
@@ -81,12 +97,11 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
-                ", bankAccount='" + bankAccount + '\'' +
-                ", walletProvider='" + walletProvider + '\'' +
+                //", bankAccount='" + bankAccount + '\'' +
+                //", walletProvider='" + walletProvider + '\'' +
                 ", userType='" + userType + '\'' +
                 ", verified=" + verified +
+                ", account balance" + moneyProvider.getBalance() +
                 '}';
     }
-
-
 }
