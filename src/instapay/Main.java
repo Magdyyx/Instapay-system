@@ -1,17 +1,10 @@
 package instapay;
 
 import instapay.Modules.Authentication.NewUserAuthentication;
-import instapay.Modules.BillPayment.Bill;
-import instapay.Modules.Authentication.Authentication;
 import instapay.Modules.Authentication.BankAuthentication;
 import instapay.Modules.Authentication.WalletAuthentication;
-import instapay.Modules.BillPayment.Bill;
-import instapay.Modules.BillPayment.BillPaymentService;
-import instapay.Modules.BillPayment.GasBill;
-import instapay.Modules.MockedAPIs.BankMockedAPI;
-import instapay.Modules.MockedAPIs.WalletMockedAPI;
+import instapay.Modules.MockedAPIs.*;
 import instapay.Modules.TransferStrategy.TransferToInstapayAccount;
-import instapay.Modules.User.User;
 
 import java.util.Scanner;
 
@@ -27,6 +20,7 @@ public class Main {
 
         // Transfer
         TransferToInstapayAccount transferStrategy = new TransferToInstapayAccount();
+        //TODO this class should be deleted and user MoneyTransferFacility instead
 
         // Bill Payment
 //        Bill gasBill = new GasBill("Gas", 100);
@@ -61,6 +55,12 @@ public class Main {
 
             int registrationChoice = scanner.nextInt();
 
+        //TODO there is a lot of code that is repeated
+        // the only difference between bank registration and wallet registration is:
+        // in bank registration we take only one extra info "the bank account number", then authenticate(accountNum, mobileNum)
+        // in wallet registration we set the mobile number to the account number, then authenticate(mobileNum)
+        // so make a third function that gathers all the info instead of these differences and seperate
+        // these differences in other function
             switch (registrationChoice) {
                 case 1:
                     registerBankUser();
@@ -72,6 +72,7 @@ public class Main {
                     System.out.println("Invalid choice. Exiting registration...");
             }
         }
+
 
 
     private static void registerBankUser() {
@@ -94,8 +95,17 @@ public class Main {
             System.out.println("Enter your NationalID:");
             String NationalID = scanner.nextLine();
 
+            //TODO add a choice list with the registered banks and make the user choose to avoid bank name errors
+            //"1- CIB bank 2-Albank Alahly ..."
+            // the names should exactly match the name in the factory
+            // then send this name to the factory i added bellow
+
             if (BankAuthentication.Authenticate(accountNumber, bankName, NationalID)){
                 System.out.println("Authentication successful!");
+                //TODO TO BE IMPLEMENTED
+//                API bankAPI = apifactory(bankName);
+//                ProviderEndpoint Provider = new ProviderEndpoint(accountNumber,bank name,bankAPI);
+//                User user = new User('2',NationalID,username,password,phoneNumber,Provider,"BankUser",true);
                 System.out.println("Registration successful! You can now log in.");
                 loginUser();
             } else {
@@ -125,13 +135,18 @@ public class Main {
         String otp = scanner.nextLine();
         if (NewUserAuthentication.Authenticate(phoneNumber, otp)) {
             System.out.println("Authentication successful!");
-            System.out.println("Enter your Wallet Provider:");
-            String walletProvider = scanner.nextLine();
+            String accountNumber = phoneNumber; // TO BE EDITED
+            System.out.println("Enter your Wallet name:");
+            String walletName = scanner.nextLine();
+            System.out.println("Enter your NationalID:");
+            String NationalID = scanner.nextLine();
 
-            System.out.println("Enter your balance:");
-            int balance = scanner.nextInt();
-            if (WalletAuthentication.Authenticate(walletProvider, balance)){
+            if (WalletAuthentication.Authenticate(phoneNumber)){
                 System.out.println("Authentication successful!");
+                //TODO TO BE IMPLEMENTED
+//                API walletAPI = apifactory(walletName);
+//                ProviderEndpoint Provider = new ProviderEndpoint(accountNumber,walletName,walletAPI);
+//                User user = new User('2',NationalID,username,password,phoneNumber,Provider,"WalletUser",true);
                 System.out.println("Registration successful! You can now log in.");
                 loginUser();
             } else {
@@ -143,8 +158,6 @@ public class Main {
         }else {
             System.out.println("Authentication failed. Exiting registration...");
         }
-
-
 
 
     }
@@ -163,6 +176,37 @@ public class Main {
 
         System.out.println("Login successful! Welcome back, " + username + "!");
     }
+
+    private static BankAPI bankAPIFactory(String bankName) {
+        bankName = bankName.toLowerCase();
+        BankAPI bankAPI = null;
+        if (bankName.equals("cib bank")) {
+            bankAPI = new CIBBankAPI();
+        } else if (bankName.equals("albank alahly")) {
+            bankAPI = new AlahlyBankAPI();
+        }/* else if () {
+
+        } else if () {
+
+        }*/
+        // if other bankAPIs is added
+        return bankAPI;
+    }
+
+    private static WalletAPI walletAPIFactory(String walletName){
+        walletName = walletName.toLowerCase();
+        WalletAPI walletAPI = null;
+        if (walletName.equals("etisalat")) {
+            walletAPI = new EtisalatCashAPI();
+        } else if (walletName.equals("vodafone")) {
+            walletAPI = new VodafoneCashAPI();
+        } else if (walletName.equals("orange")) {
+            walletAPI = new OrangeCashAPI();
+        }
+
+        return walletAPI;
+    }
+
 
     }
 

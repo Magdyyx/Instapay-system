@@ -9,32 +9,30 @@ public class MoneyTransferFacility {
 
     // This must be an atomic operation by the way. Not our concern right now.
     public boolean TransferMoney(User senderAccount, User receiverAccount, int amount) {
-        // Get user from Repo (sender).
-        // MoneyProvider provider = findEnumByString(senderAccount.getMoneyProviderName()); // Get from user object.
-        ProviderEndpoint senderEndpoint = senderAccount.getMoneyProvider();
-        //ProviderEndpoint senderEndpoint = CreateProviderEndpoint(provider);
-        if (!senderEndpoint.HasEnoughBalance(amount)) {
+
+        if (senderAccount.getUserType().equals("wallet") && receiverAccount.getUserType().equals("bank")){
             return false; // Indicate error
+        } else {
+            ProviderEndpoint senderEndpoint = senderAccount.getMoneyProvider();
+            if (!senderEndpoint.HasEnoughBalance(amount)) {
+                return false; // Indicate error
+            }
+            senderEndpoint.withdraw(amount);
+
+            ProviderEndpoint receiverEndpoint = receiverAccount.getMoneyProvider();
+            receiverEndpoint.deposit(amount);
+            return true;
         }
 
-        senderEndpoint.Debit(amount);
 
-        // Get user from Repo (receiver).
-        //provider = receiverAccount.getMoneyProvider(); // Get from user object.
-        ProviderEndpoint receiverEndpoint = receiverAccount.getMoneyProvider();
-        receiverEndpoint.Credit(amount);
-        return true;
     }
-    /*
-
-    public int InquireBalance(String accountId) {
-        // Get user from Repo (sender).
-        MoneyProvider provider = MoneyProvider.CIB; // Get from user object.
-        ProviderEndpoint endpoint = CreateProviderEndpoint(provider);
-
-        return endpoint.GetBalance(accountId);
+    public double InquireBalance(User user) {
+        ProviderEndpoint endpoint = user.getMoneyProvider();
+        return endpoint.getBalance();
     }
 
+
+/*
     public Bill GetBill(BillingEntity entity, String billId) {
         BillingEndpoint endpoint = CreateBillingEndpoint(entity);
         return endpoint.GetBill(billId);
@@ -58,13 +56,5 @@ public class MoneyTransferFacility {
         return true;
     }
 
-    // funtion to get the matching MoneyProvider from the enum
-    public MoneyProvider findEnumByString(String input) {
-        for (MoneyProvider value : MoneyProvider.values()) {
-            if (value.name().equals(input)) {
-                return value;
-            }
-        }
-        return null;
     }*/
 }

@@ -1,3 +1,4 @@
+// TODO this class should be deleted and user MoneyTransferFacility instead
 package instapay.Modules.TransferStrategy;
 
 public class TransferToInstapayAccount implements TransferStrategy {

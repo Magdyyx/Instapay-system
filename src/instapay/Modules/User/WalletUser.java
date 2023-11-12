@@ -1,3 +1,6 @@
+//TODO consider deleting this file and replace any usages with an ordinary user
+//user now has a financesProvider no need to make specific users
+
 //package instapay.Modules.User;
 //
 //public class WalletUser extends User {
