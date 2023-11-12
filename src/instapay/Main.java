@@ -74,6 +74,7 @@ public class Main {
         }
 
 
+
     private static void registerBankUser() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your details to register:");
