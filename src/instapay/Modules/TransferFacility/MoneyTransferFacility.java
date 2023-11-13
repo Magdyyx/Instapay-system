@@ -1,8 +1,9 @@
 package instapay.Modules.TransferFacility;
 
+import instapay.Enums.BillsEnum;
 import instapay.Modules.Bill.UtilityBill;
 import instapay.Modules.Endpoints.BillingEndpoint;
-import instapay.Modules.Endpoints.MockupBillingEndpoint;
+import instapay.Modules.Endpoints.MockupGasBillingEndpoint;
 import instapay.Modules.Endpoints.ProviderEndpoint;
 import instapay.Modules.Repositories.UserRepository;
 import instapay.Modules.User.InstapayUser;
@@ -13,9 +14,9 @@ import java.util.Optional;
 
 public abstract class MoneyTransferFacility {
     protected final UserRepository userRepository = new InMemoryUserRepository();
-    protected final BillingEndpoint billingEndpoint = new MockupBillingEndpoint();
+    protected abstract BillingEndpoint CreateBillingEndpoint(BillsEnum billType);
 
-    public abstract ProviderEndpoint CreateProviderEndpoint(MoneyProvider provider);
+    protected abstract ProviderEndpoint CreateProviderEndpoint(MoneyProvider provider);
 
     // This must be an atomic operation by the way. Not our concern right now.
     public boolean TransferMoney(String senderProviderAccountIdentifier, String receiverProviderAccountIdentifier
@@ -79,12 +80,14 @@ public abstract class MoneyTransferFacility {
         return endpoint.GetBalance(providerAccountIdentifier);
     }
 
-    public UtilityBill GetBill(int billId) {
-        return billingEndpoint.getBill(billId);
+    public UtilityBill GetBill(int billId, BillsEnum billType) {
+        return CreateBillingEndpoint(billType).getBill(billId);
     }
 
-    public boolean PayBill(String providerAccountIdentifier, int billId) {
-        UtilityBill billToPay = GetBill(billId);
+    public boolean PayBill(String providerAccountIdentifier, int billId, BillsEnum billType) {
+        BillingEndpoint billingEndpoint = CreateBillingEndpoint(billType);
+
+        UtilityBill billToPay = billingEndpoint.getBill(billId);
 
         // Get user from Repo (receiver).
         Optional<InstapayUser> userOptional = userRepository.getUserByProviderAccountIdentifier(providerAccountIdentifier);

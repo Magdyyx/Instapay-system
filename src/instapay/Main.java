@@ -1,5 +1,6 @@
 package instapay;
 
+import instapay.Enums.BillsEnum;
 import instapay.Modules.Repositories.InMemoryUserRepository;
 import instapay.Modules.Repositories.UserRepository;
 import instapay.Modules.TransferFacility.InstapayTransferFacility;
@@ -42,16 +43,16 @@ public class Main {
         double userBalance = facility.InquireBalance(currentlyLoggedInUser.getProviderAccountIdentifier());
         System.out.println(currentlyLoggedInUser + " | Balance: " + userBalance);
 
-        facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), 1);
-        facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), 3);
+        facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), 1, BillsEnum.Electricity);
+        facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), 3, BillsEnum.Water);
 
         userBalance = facility.InquireBalance(currentlyLoggedInUser.getProviderAccountIdentifier());
         System.out.println(currentlyLoggedInUser + " | Balance: " + userBalance);
 
 
 
-        System.out.println(facility.GetBill(1));
-        System.out.println(facility.GetBill(3));
+        System.out.println(facility.GetBill(1, BillsEnum.Electricity));
+        System.out.println(facility.GetBill(3, BillsEnum.Water));
 
         System.out.println();
 

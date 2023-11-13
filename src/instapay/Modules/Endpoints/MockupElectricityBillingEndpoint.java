@@ -1,16 +1,14 @@
 package instapay.Modules.Endpoints;
 
 import instapay.Modules.Bill.UtilityBill;
-import instapay.Modules.Repositories.BillRepository;
-import instapay.Modules.Repositories.InMemoryBillRepository;
 
-public class MockupBillingEndpoint implements BillingEndpoint {
-    private final BillRepository billRepository = new InMemoryBillRepository();
-
+public class MockupElectricityBillingEndpoint extends BillingEndpoint {
+    @Override
     public UtilityBill getBill(int billId) {
         return billRepository.getBill(billId);
     }
 
+    @Override
     public boolean payBill(int billId) {
         UtilityBill bill = billRepository.getBill(billId);
 
