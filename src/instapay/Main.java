@@ -5,7 +5,7 @@ import instapay.Modules.Repositories.InMemoryUserRepository;
 import instapay.Modules.Repositories.UserRepository;
 import instapay.Modules.TransferFacility.InstapayTransferFacility;
 import instapay.Modules.TransferFacility.MoneyTransferFacility;
-import instapay.Modules.User.InstapayUser;
+import instapay.Modules.User.User;
 
 import java.util.Scanner;
 
@@ -38,7 +38,7 @@ public class Main {
         UserRepository users = new InMemoryUserRepository();
         MoneyTransferFacility facility = new InstapayTransferFacility();
 
-        InstapayUser currentlyLoggedInUser = users.getUserByUsername("Kilany").get();
+        User currentlyLoggedInUser = users.getUserByUsername("Kilany").get();
 
         double userBalance = facility.InquireBalance(currentlyLoggedInUser.getProviderAccountIdentifier());
         System.out.println(currentlyLoggedInUser + " | Balance: " + userBalance);

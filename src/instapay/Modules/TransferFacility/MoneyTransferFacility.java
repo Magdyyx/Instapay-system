@@ -3,10 +3,9 @@ package instapay.Modules.TransferFacility;
 import instapay.Enums.BillsEnum;
 import instapay.Modules.Bill.UtilityBill;
 import instapay.Modules.Endpoints.BillingEndpoint;
-import instapay.Modules.Endpoints.MockupGasBillingEndpoint;
 import instapay.Modules.Endpoints.ProviderEndpoint;
 import instapay.Modules.Repositories.UserRepository;
-import instapay.Modules.User.InstapayUser;
+import instapay.Modules.User.User;
 import instapay.Modules.Repositories.InMemoryUserRepository;
 import instapay.Enums.MoneyProvider;
 
@@ -21,7 +20,7 @@ public abstract class MoneyTransferFacility {
     // This must be an atomic operation by the way. Not our concern right now.
     public boolean TransferMoney(String senderProviderAccountIdentifier, String receiverProviderAccountIdentifier
             , MoneyProvider receiverProvider, int amount) {
-        Optional<InstapayUser> senderOptional = userRepository.getUserByProviderAccountIdentifier(senderProviderAccountIdentifier);
+        Optional<User> senderOptional = userRepository.getUserByProviderAccountIdentifier(senderProviderAccountIdentifier);
         if (senderOptional.isEmpty()) {
             return false;
         }
@@ -48,19 +47,19 @@ public abstract class MoneyTransferFacility {
     }
 
     public boolean TransferMoney(String senderProviderAccountIdentifier, String receiverproviderAccountIdentifier, int amount) {
-        Optional<InstapayUser> receiverOptional = userRepository.getUserByProviderAccountIdentifier(receiverproviderAccountIdentifier);
+        Optional<User> receiverOptional = userRepository.getUserByProviderAccountIdentifier(receiverproviderAccountIdentifier);
 
         if (receiverOptional.isEmpty()) {
             return false;
         }
 
-        InstapayUser receiver = receiverOptional.get();
+        User receiver = receiverOptional.get();
 
         return TransferMoney(senderProviderAccountIdentifier, receiverproviderAccountIdentifier, receiver.getMoneyProvider(), amount);
     }
 
     public boolean TransferMoneyToInstapay(String senderProviderAccountIdentifier, String receiverUsername, int amount) {
-        Optional<InstapayUser> receiverOptional = userRepository.getUserByUsername(receiverUsername);
+        Optional<User> receiverOptional = userRepository.getUserByUsername(receiverUsername);
         if (receiverOptional.isEmpty()) {
             return false; // Receiver not found.
         }
@@ -69,7 +68,7 @@ public abstract class MoneyTransferFacility {
     }
 
     public double InquireBalance(String providerAccountIdentifier) {
-        Optional<InstapayUser> userOptional = userRepository.getUserByProviderAccountIdentifier(providerAccountIdentifier);
+        Optional<User> userOptional = userRepository.getUserByProviderAccountIdentifier(providerAccountIdentifier);
         if (userOptional.isEmpty()) {
             // Indicate error; by throwing exception for example.
             return -1.0;
@@ -90,7 +89,7 @@ public abstract class MoneyTransferFacility {
         UtilityBill billToPay = billingEndpoint.getBill(billId);
 
         // Get user from Repo (receiver).
-        Optional<InstapayUser> userOptional = userRepository.getUserByProviderAccountIdentifier(providerAccountIdentifier);
+        Optional<User> userOptional = userRepository.getUserByProviderAccountIdentifier(providerAccountIdentifier);
         if (userOptional.isEmpty()) {
             return false;
         }
