@@ -1,34 +1,44 @@
 package instapay;
 
-import instapay.DataAccess.Repositories.UserDAO;
-import instapay.DataAccess.Models.User;
+import instapay.Abstractions.BillRepository;
+import instapay.Abstractions.UserRepository;
+import instapay.DataAccess.Models.InstapayUser;
+import instapay.DataAccess.Repositories.InMemoryBillRepository;
+import instapay.DataAccess.Repositories.InMemoryUserRepository;
+import instapay.TransferFacility.InstapayTransferFacility;
+import instapay.TransferFacility.MoneyTransferFacility;
 
 public class Main {
     public static void main(String[] args) {
-        UserDAO userDAO = new UserDAO();
-//
-//        //Get a user by ID
-//        User userById = userDAO.getUserById(1);
-//        System.out.println("User by ID: " + userById);
+        UserRepository users = new InMemoryUserRepository();
+        MoneyTransferFacility facility = new InstapayTransferFacility();
 
-//        //Get all users
-//        List<User> allUsers = userDAO.getAllUsers();
-//        System.out.println("All users: " + allUsers);
+        InstapayUser currentlyLoggedInUser = users.getUserByUsername("Kilany").get();
 
-//        //Add a new user
-        User newUser = new User("newUser", "newPassword", "newEmail", "newPhone", "newAddress", "newCity",true );
-        userDAO.addUser(newUser);
-        System.out.println("User added: " + newUser);
-//
-//        //Update user details
-//        User userToUpdate = userDAO.getUserById(2);
-//        userToUpdate.setUsername("ahmed");
-//        userDAO.updateUser(userToUpdate);
-//        System.out.println("User updated: " + userToUpdate);
+        double userBalance = facility.InquireBalance(currentlyLoggedInUser.getAccountNumber());
+        System.out.println(currentlyLoggedInUser + " | Balance: " + userBalance);
 
-        // Example: Delete a user by ID
-//        int userIdToDelete = 2;
-//        userDAO.deleteUser(userIdToDelete);
-//        System.out.println("User deleted with ID: " + userIdToDelete);
+        facility.PayBill(currentlyLoggedInUser.getAccountNumber(), 1);
+        facility.PayBill(currentlyLoggedInUser.getAccountNumber(), 3);
+
+        userBalance = facility.InquireBalance(currentlyLoggedInUser.getAccountNumber());
+        System.out.println(currentlyLoggedInUser + " | Balance: " + userBalance);
+
+
+
+        System.out.println(facility.GetBill(1));
+        System.out.println(facility.GetBill(3));
+
+        System.out.println();
+
+
+        System.out.println("Before Transfer_____");
+        System.out.println(facility.InquireBalance("01213647953"));
+        System.out.println();
+        facility.TransferMoney(currentlyLoggedInUser.getAccountNumber(), "01213647953", 100);
+
+        System.out.println("After Transfer_____");
+        System.out.println(facility.InquireBalance(currentlyLoggedInUser.getAccountNumber()));
+        System.out.println(facility.InquireBalance("01213647953"));
     }
 }

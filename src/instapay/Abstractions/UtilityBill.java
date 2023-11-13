@@ -39,6 +39,16 @@ public abstract class UtilityBill {
         return isPaid;
     }
 
+    @Override
+    public String toString() {
+        return "UtilityBill{" +
+                "billId=" + billId +
+                ", userId=" + userId +
+                ", isPaid=" + isPaid +
+                ", billAmount=" + billAmount +
+                '}';
+    }
+
     public void payBill() {
         isPaid = true;
 

@@ -1,11 +1,17 @@
 package instapay.Abstractions;
 
+import instapay.DataAccess.Repositories.InMemoryAccountRepository;
+
 public abstract class ProviderEndpoint {
-    public abstract boolean HasEnoughBalance(String accountId, int amount);
+    protected final AccountRepository accountRepository = new InMemoryAccountRepository();
 
-    public abstract boolean Debit(String accountId, int amount);
+    public abstract boolean HasEnoughBalance(String accountNumber, double amount);
 
-    public abstract boolean Credit(String accountId, int amount);
+    public abstract boolean Debit(String accountNumber, double amount);
 
-    public abstract int GetBalance(String accountId);
+    public abstract boolean Credit(String accountNumber, double amount);
+
+    public abstract double GetBalance(String accountNumber);
+
+    public abstract boolean VerifyAccount(String accountNumber);
 }

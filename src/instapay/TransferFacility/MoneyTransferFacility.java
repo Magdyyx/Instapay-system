@@ -1,64 +1,112 @@
 package instapay.TransferFacility;
 
 import instapay.Abstractions.BillingEndpoint;
+import instapay.Endpoints.MockupBillingEndpoint;
 import instapay.Abstractions.ProviderEndpoint;
-import instapay.DataAccess.Models.Bill;
-import instapay.Enums.BillingEntity;
+import instapay.Abstractions.UserRepository;
+import instapay.Abstractions.UtilityBill;
+import instapay.DataAccess.Models.InstapayUser;
+import instapay.DataAccess.Repositories.InMemoryUserRepository;
+import instapay.Enums.BillsEnum;
 import instapay.Enums.MoneyProvider;
 
+import java.util.Optional;
+
 public abstract class MoneyTransferFacility {
+    protected final UserRepository userRepository = new InMemoryUserRepository();
+    protected final BillingEndpoint billingEndpoint = new MockupBillingEndpoint();
 
     public abstract ProviderEndpoint CreateProviderEndpoint(MoneyProvider provider);
 
-    public abstract BillingEndpoint CreateBillingEndpoint(BillingEntity entity);
-
     // This must be an atomic operation by the way. Not our concern right now.
-    public boolean TransferMoney(String senderAccountId, String receiverAccountId, int amount) {
-        // Get user from Repo (sender).
-        MoneyProvider provider = MoneyProvider.CIB; // Get from user object.
-        ProviderEndpoint senderEndpoint = CreateProviderEndpoint(provider);
-        if (!senderEndpoint.HasEnoughBalance(senderAccountId, amount)) {
+    public boolean TransferMoney(String senderAccountNumber, String receiverAccountNumber, int amount) {
+        Optional<InstapayUser> senderOptional = userRepository.getUserByAccountNumber(senderAccountNumber);
+        Optional<InstapayUser> receiverOptional = userRepository.getUserByAccountNumber(receiverAccountNumber);
+
+        if (senderOptional.isEmpty() || receiverOptional.isEmpty()) {
+            return false;
+        }
+
+        InstapayUser sender = senderOptional.get();
+        InstapayUser receiver = receiverOptional.get();
+
+        ProviderEndpoint senderEndpoint = CreateProviderEndpoint(sender.getMoneyProvider());
+        if (!senderEndpoint.HasEnoughBalance(senderAccountNumber, amount)) {
             return false; // Indicate error
         }
 
-        senderEndpoint.Debit(senderAccountId, amount);
+        if (!senderEndpoint.Debit(senderAccountNumber, amount)) {
+            return false;
+        }
 
-        // Get user from Repo (receiver).
-        provider = MoneyProvider.Fawry; // Get from user object.
-        ProviderEndpoint receiverEndpoint = CreateProviderEndpoint(provider);
-        receiverEndpoint.Credit(receiverAccountId, amount);
+        ProviderEndpoint receiverEndpoint = CreateProviderEndpoint(receiver.getMoneyProvider());
+
+        if (!receiverEndpoint.Credit(receiverAccountNumber, amount)) {
+            // Retract the debit.
+            senderEndpoint.Credit(senderAccountNumber, amount);
+
+            return false;
+        }
 
         return true;
     }
 
-    public int InquireBalance(String accountId) {
-        // Get user from Repo (sender).
-        MoneyProvider provider = MoneyProvider.CIB; // Get from user object.
-        ProviderEndpoint endpoint = CreateProviderEndpoint(provider);
+    public boolean TransferMoneyToInstapay(String senderAccountNumber, String receiverUsername, int amount) {
+        Optional<InstapayUser> receiverOptional = userRepository.getUserByUsername(receiverUsername);
+        if (receiverOptional.isEmpty()) {
+            return false; // Receiver not found.
+        }
 
-        return endpoint.GetBalance(accountId);
+        return TransferMoney(senderAccountNumber, receiverOptional.get().getAccountNumber(), amount);
     }
 
-    public Bill GetBill(BillingEntity entity, String billId) {
-        BillingEndpoint endpoint = CreateBillingEndpoint(entity);
-        return endpoint.GetBill(billId);
+    public double InquireBalance(String accountNumber) {
+        Optional<InstapayUser> userOptional = userRepository.getUserByAccountNumber(accountNumber);
+        if (userOptional.isEmpty()) {
+            // Indicate error; by throwing exception for example.
+            return -1.0;
+        }
+
+        ProviderEndpoint endpoint = CreateProviderEndpoint(userOptional.get().getMoneyProvider());
+
+        return endpoint.GetBalance(accountNumber);
     }
 
-    public boolean PayBill(BillingEntity entity, String accountId, String billId) {
-        Bill billToPay = GetBill(entity, billId);
+    public UtilityBill GetBill(int billId) {
+        return billingEndpoint.getBill(billId);
+    }
+
+    public boolean PayBill(String accountNumber, int billId) {
+        UtilityBill billToPay = GetBill(billId);
 
         // Get user from Repo (receiver).
-        MoneyProvider provider = MoneyProvider.Fawry; // Get from user object.
-        ProviderEndpoint payerEndpoint = CreateProviderEndpoint(provider);
+        Optional<InstapayUser> userOptional = userRepository.getUserByAccountNumber(accountNumber);
+        if (userOptional.isEmpty()) {
+            return false;
+        }
 
-        if (!payerEndpoint.HasEnoughBalance(accountId, billToPay.GetAmount())) {
+        ProviderEndpoint payerEndpoint = CreateProviderEndpoint(userOptional.get().getMoneyProvider());
+
+        if (!payerEndpoint.HasEnoughBalance(accountNumber, billToPay.getBillAmount())) {
             return false; // Indicate error.
         }
 
-        BillingEndpoint billingEndpoint = CreateBillingEndpoint(entity);
-        payerEndpoint.Debit(accountId, billToPay.GetAmount());
-        billingEndpoint.PayBill(billId);
+        if (!payerEndpoint.Debit(accountNumber, billToPay.getBillAmount())) {
+            return false;
+        }
+
+        if (!billingEndpoint.payBill(billId)) {
+            // Retract the debit.
+            payerEndpoint.Credit(accountNumber, billToPay.getBillAmount());
+
+            return false;
+        }
 
         return true;
+    }
+
+    public boolean VerifyAccount(MoneyProvider provider, String accountNumber) {
+        ProviderEndpoint providerEndpoint = CreateProviderEndpoint(provider);
+        return providerEndpoint.VerifyAccount(accountNumber);
     }
 }
