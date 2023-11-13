@@ -8,8 +8,8 @@ public class MockupAlahlyEndpoint extends ProviderEndpoint {
 
 
     @Override
-    public boolean Credit(String accountNumber, double amount) {
-        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(accountNumber);
+    public boolean Credit(String providerAccountIdentifier, double amount) {
+        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier);
         if (accountOptional.isPresent()) {
             ExternalAccount toUpdate = accountOptional.get();
             toUpdate.setBalance(toUpdate.getBalance() + amount);
@@ -21,8 +21,8 @@ public class MockupAlahlyEndpoint extends ProviderEndpoint {
     }
 
     @Override
-    public boolean Debit(String accountNumber, double amount) {
-        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(accountNumber);
+    public boolean Debit(String providerAccountIdentifier, double amount) {
+        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier);
         if (accountOptional.isPresent()) {
             ExternalAccount toUpdate = accountOptional.get();
             toUpdate.setBalance(toUpdate.getBalance() - amount);
@@ -34,20 +34,20 @@ public class MockupAlahlyEndpoint extends ProviderEndpoint {
     }
 
     @Override
-    public boolean HasEnoughBalance(String accountNumber, double amount) {
-        return accountRepository.getAccountBy(accountNumber)
+    public boolean HasEnoughBalance(String providerAccountIdentifier, double amount) {
+        return accountRepository.getAccountBy(providerAccountIdentifier)
                 .filter(account -> account.getBalance() >= amount)
                 .isPresent();
     }
 
     @Override
-    public double GetBalance(String accountNumber) {
-        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(accountNumber);
+    public double GetBalance(String providerAccountIdentifier) {
+        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier);
         return accountOptional.map(ExternalAccount::getBalance).orElse(0.0);
     }
 
     @Override
-    public boolean VerifyAccount(String accountNumber) {
+    public boolean VerifyAccount(String providerAccountIdentifier) {
         return true;
     }
 

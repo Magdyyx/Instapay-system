@@ -12,5 +12,5 @@ public interface UserRepository {
 
     public Optional<InstapayUser> getUserByUsername(String username);
 
-    public Optional<InstapayUser> getUserByProviderHandle(String providerHandle);
+    public Optional<InstapayUser> getUserByProviderAccountIdentifier(String providerAccountIdentifier);
 }

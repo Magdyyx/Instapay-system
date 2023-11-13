@@ -1,6 +1,5 @@
 package instapay.Modules.Repositories;
 
-import instapay.Modules.Repositories.AccountRepository;
 import instapay.Modules.Account.ExternalAccount;
 import instapay.Enums.MoneyProvider;
 
@@ -27,7 +26,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     @Override
     public void updateAccount(ExternalAccount account) {
         Optional<ExternalAccount> updateCandidate = accounts.stream()
-                .filter(a -> a.getProviderHandle().equals(account.getProviderHandle()))
+                .filter(a -> a.getProviderAccountIdentifier().equals(account.getProviderAccountIdentifier()))
                 .findFirst();
 
         if (updateCandidate.isPresent()) {
@@ -37,10 +36,10 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<ExternalAccount> getAccountBy(String providerHandle) {
+    public Optional<ExternalAccount> getAccountBy(String providerAccountIdentifier) {
 
         return accounts.stream()
-                .filter(a -> a.getProviderHandle().equals(providerHandle))
+                .filter(a -> a.getProviderAccountIdentifier().equals(providerAccountIdentifier))
                 .findFirst();
     }
 }

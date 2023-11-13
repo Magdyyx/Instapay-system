@@ -3,12 +3,12 @@ package instapay.Modules.Account;
 import instapay.Enums.MoneyProvider;
 
 public class ExternalAccount {
-    private String providerHandle;
+    private String providerAccountIdentifier;
     private double balance;
     private MoneyProvider provider;
 
-    public ExternalAccount(String providerHandle, double balance, MoneyProvider provider) {
-        this.providerHandle = providerHandle;
+    public ExternalAccount(String providerAccountIdentifier, double balance, MoneyProvider provider) {
+        this.providerAccountIdentifier = providerAccountIdentifier;
         this.balance = balance;
         this.provider = provider;
     }
@@ -17,8 +17,8 @@ public class ExternalAccount {
         return provider;
     }
 
-    public String getProviderHandle() {
-        return providerHandle;
+    public String getProviderAccountIdentifier() {
+        return providerAccountIdentifier;
     }
 
     public double getBalance() {

@@ -39,13 +39,13 @@ public class Main {
 
         InstapayUser currentlyLoggedInUser = users.getUserByUsername("Kilany").get();
 
-        double userBalance = facility.InquireBalance(currentlyLoggedInUser.getProviderHandle());
+        double userBalance = facility.InquireBalance(currentlyLoggedInUser.getProviderAccountIdentifier());
         System.out.println(currentlyLoggedInUser + " | Balance: " + userBalance);
 
-        facility.PayBill(currentlyLoggedInUser.getProviderHandle(), 1);
-        facility.PayBill(currentlyLoggedInUser.getProviderHandle(), 3);
+        facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), 1);
+        facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), 3);
 
-        userBalance = facility.InquireBalance(currentlyLoggedInUser.getProviderHandle());
+        userBalance = facility.InquireBalance(currentlyLoggedInUser.getProviderAccountIdentifier());
         System.out.println(currentlyLoggedInUser + " | Balance: " + userBalance);
 
 
@@ -59,10 +59,10 @@ public class Main {
         System.out.println("Before Transfer_____");
         System.out.println(facility.InquireBalance("01213647953"));
         System.out.println();
-        facility.TransferMoney(currentlyLoggedInUser.getProviderHandle(), "01213647953", 100);
+        facility.TransferMoney(currentlyLoggedInUser.getProviderAccountIdentifier(), "01213647953", 100);
 
         System.out.println("After Transfer_____");
-        System.out.println(facility.InquireBalance(currentlyLoggedInUser.getProviderHandle()));
+        System.out.println(facility.InquireBalance(currentlyLoggedInUser.getProviderAccountIdentifier()));
         System.out.println(facility.InquireBalance("01213647953"));
     }
 

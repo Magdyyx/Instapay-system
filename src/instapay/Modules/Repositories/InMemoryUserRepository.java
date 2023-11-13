@@ -36,9 +36,9 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<InstapayUser> getUserByProviderHandle(String providerHandle) {
+    public Optional<InstapayUser> getUserByProviderAccountIdentifier(String providerAccountIdentifier) {
         return users.stream()
-                .filter(u -> u.getProviderHandle().equals(providerHandle))
+                .filter(u -> u.getProviderAccountIdentifier().equals(providerAccountIdentifier))
                 .findFirst();
     }
 }

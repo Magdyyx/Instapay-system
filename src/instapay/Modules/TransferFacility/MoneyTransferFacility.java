@@ -18,27 +18,27 @@ public abstract class MoneyTransferFacility {
     public abstract ProviderEndpoint CreateProviderEndpoint(MoneyProvider provider);
 
     // This must be an atomic operation by the way. Not our concern right now.
-    public boolean TransferMoney(String senderProviderHandle, String receiverProviderHandle
+    public boolean TransferMoney(String senderProviderAccountIdentifier, String receiverProviderAccountIdentifier
             , MoneyProvider receiverProvider, int amount) {
-        Optional<InstapayUser> senderOptional = userRepository.getUserByProviderHandle(senderProviderHandle);
+        Optional<InstapayUser> senderOptional = userRepository.getUserByProviderAccountIdentifier(senderProviderAccountIdentifier);
         if (senderOptional.isEmpty()) {
             return false;
         }
 
         ProviderEndpoint senderEndpoint = CreateProviderEndpoint(senderOptional.get().getMoneyProvider());
-        if (!senderEndpoint.HasEnoughBalance(senderProviderHandle, amount)) {
+        if (!senderEndpoint.HasEnoughBalance(senderProviderAccountIdentifier, amount)) {
             return false; // Indicate error
         }
 
-        if (!senderEndpoint.Debit(senderProviderHandle, amount)) {
+        if (!senderEndpoint.Debit(senderProviderAccountIdentifier, amount)) {
             return false;
         }
 
         ProviderEndpoint receiverEndpoint = CreateProviderEndpoint(receiverProvider);
 
-        if (!receiverEndpoint.Credit(receiverProviderHandle, amount)) {
+        if (!receiverEndpoint.Credit(receiverProviderAccountIdentifier, amount)) {
             // Retract the debit.
-            senderEndpoint.Credit(senderProviderHandle, amount);
+            senderEndpoint.Credit(senderProviderAccountIdentifier, amount);
 
             return false;
         }
@@ -46,8 +46,8 @@ public abstract class MoneyTransferFacility {
         return true;
     }
 
-    public boolean TransferMoney(String senderProviderHandle, String receiverProviderHandle, int amount) {
-        Optional<InstapayUser> receiverOptional = userRepository.getUserByProviderHandle(receiverProviderHandle);
+    public boolean TransferMoney(String senderProviderAccountIdentifier, String receiverproviderAccountIdentifier, int amount) {
+        Optional<InstapayUser> receiverOptional = userRepository.getUserByProviderAccountIdentifier(receiverproviderAccountIdentifier);
 
         if (receiverOptional.isEmpty()) {
             return false;
@@ -55,20 +55,20 @@ public abstract class MoneyTransferFacility {
 
         InstapayUser receiver = receiverOptional.get();
 
-        return TransferMoney(senderProviderHandle, receiverProviderHandle, receiver.getMoneyProvider(), amount);
+        return TransferMoney(senderProviderAccountIdentifier, receiverproviderAccountIdentifier, receiver.getMoneyProvider(), amount);
     }
 
-    public boolean TransferMoneyToInstapay(String senderProviderHandle, String receiverUsername, int amount) {
+    public boolean TransferMoneyToInstapay(String senderProviderAccountIdentifier, String receiverUsername, int amount) {
         Optional<InstapayUser> receiverOptional = userRepository.getUserByUsername(receiverUsername);
         if (receiverOptional.isEmpty()) {
             return false; // Receiver not found.
         }
 
-        return TransferMoney(senderProviderHandle, receiverOptional.get().getProviderHandle(), amount);
+        return TransferMoney(senderProviderAccountIdentifier, receiverOptional.get().getProviderAccountIdentifier(), amount);
     }
 
-    public double InquireBalance(String providerHandle) {
-        Optional<InstapayUser> userOptional = userRepository.getUserByProviderHandle(providerHandle);
+    public double InquireBalance(String providerAccountIdentifier) {
+        Optional<InstapayUser> userOptional = userRepository.getUserByProviderAccountIdentifier(providerAccountIdentifier);
         if (userOptional.isEmpty()) {
             // Indicate error; by throwing exception for example.
             return -1.0;
@@ -76,35 +76,35 @@ public abstract class MoneyTransferFacility {
 
         ProviderEndpoint endpoint = CreateProviderEndpoint(userOptional.get().getMoneyProvider());
 
-        return endpoint.GetBalance(providerHandle);
+        return endpoint.GetBalance(providerAccountIdentifier);
     }
 
     public UtilityBill GetBill(int billId) {
         return billingEndpoint.getBill(billId);
     }
 
-    public boolean PayBill(String providerHandle, int billId) {
+    public boolean PayBill(String providerAccountIdentifier, int billId) {
         UtilityBill billToPay = GetBill(billId);
 
         // Get user from Repo (receiver).
-        Optional<InstapayUser> userOptional = userRepository.getUserByProviderHandle(providerHandle);
+        Optional<InstapayUser> userOptional = userRepository.getUserByProviderAccountIdentifier(providerAccountIdentifier);
         if (userOptional.isEmpty()) {
             return false;
         }
 
         ProviderEndpoint payerEndpoint = CreateProviderEndpoint(userOptional.get().getMoneyProvider());
 
-        if (!payerEndpoint.HasEnoughBalance(providerHandle, billToPay.getBillAmount())) {
+        if (!payerEndpoint.HasEnoughBalance(providerAccountIdentifier, billToPay.getBillAmount())) {
             return false; // Indicate error.
         }
 
-        if (!payerEndpoint.Debit(providerHandle, billToPay.getBillAmount())) {
+        if (!payerEndpoint.Debit(providerAccountIdentifier, billToPay.getBillAmount())) {
             return false;
         }
 
         if (!billingEndpoint.payBill(billId)) {
             // Retract the debit.
-            payerEndpoint.Credit(providerHandle, billToPay.getBillAmount());
+            payerEndpoint.Credit(providerAccountIdentifier, billToPay.getBillAmount());
 
             return false;
         }
@@ -112,8 +112,8 @@ public abstract class MoneyTransferFacility {
         return true;
     }
 
-    public boolean VerifyAccount(MoneyProvider provider, String providerHandle) {
+    public boolean VerifyAccount(MoneyProvider provider, String providerAccountIdentifier) {
         ProviderEndpoint providerEndpoint = CreateProviderEndpoint(provider);
-        return providerEndpoint.VerifyAccount(providerHandle);
+        return providerEndpoint.VerifyAccount(providerAccountIdentifier);
     }
 }
