@@ -1,12 +1,12 @@
 package instapay.Modules.Repositories;
 
-import instapay.Abstractions.UtilityBill;
-import instapay.DataAccess.Models.ElectricityBill;
-import instapay.DataAccess.Models.GasBill;
-import instapay.DataAccess.Models.WaterBill;
-
 import java.util.List;
 import java.util.Optional;
+
+import instapay.Modules.Bill.ElectricityBill;
+import instapay.Modules.Bill.GasBill;
+import instapay.Modules.Bill.UtilityBill;
+import instapay.Modules.Bill.WaterBill;
 
 public class InMemoryBillRepository implements BillRepository {
 

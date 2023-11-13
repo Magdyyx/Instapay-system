@@ -25,7 +25,6 @@ public class MockupFawryEndpoint extends ProviderEndpoint {
         if (accountOptional.isPresent()) {
             ExternalAccount toUpdate = accountOptional.get();
             toUpdate.setBalance(toUpdate.getBalance() - amount);
-            accountRepository.updateAccount(toUpdate);
 
             return true;
         } else {

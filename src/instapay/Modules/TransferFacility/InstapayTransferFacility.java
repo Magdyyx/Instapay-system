@@ -11,7 +11,7 @@ public class InstapayTransferFacility extends MoneyTransferFacility {
         switch (provider) {
             case Fawry:
                 return new MockupFawryEndpoint();
-            case CIB:
+            case CIBBank:
                 return new MockupCIBEndpoint();
             case Alahly:
                 return new MockupAlahlyEndpoint();

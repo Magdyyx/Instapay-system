@@ -1,6 +1,6 @@
 package instapay.Modules.TransferFacility;
 
-import instapay.Model.UtilityBillsModels.UtilityBill;
+import instapay.Modules.Bill.UtilityBill;
 import instapay.Modules.Endpoints.BillingEndpoint;
 import instapay.Modules.Endpoints.MockupBillingEndpoint;
 import instapay.Modules.Endpoints.ProviderEndpoint;

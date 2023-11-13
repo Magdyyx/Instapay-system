@@ -1,4 +1,4 @@
-package instapay.Model.UtilityBillsModels;
+package instapay.Modules.Bill;
 
 import java.util.Random;
 

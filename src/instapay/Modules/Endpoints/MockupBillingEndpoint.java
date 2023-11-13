@@ -1,7 +1,7 @@
 package instapay.Modules.Endpoints;
 
+import instapay.Modules.Bill.UtilityBill;
 import instapay.Modules.Repositories.BillRepository;
-import instapay.Abstractions.UtilityBill;
 import instapay.Modules.Repositories.InMemoryBillRepository;
 
 public class MockupBillingEndpoint implements BillingEndpoint {

@@ -1,7 +1,7 @@
 package instapay.Modules.User;
 
 import instapay.Enums.MoneyProvider;
-import instapay.Modules.Account.Account;
+import instapay.Modules.Account.AccountInfo;
 
 public class InstapayUser {
     private String username;
@@ -9,7 +9,7 @@ public class InstapayUser {
     private String phone;
     private MoneyProvider moneyProvider;
     private String providerHandle;
-    private Account account;
+    private AccountInfo accountInfo;
 
     public InstapayUser() {
     }

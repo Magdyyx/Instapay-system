@@ -1,5 +1,5 @@
 package instapay.Modules.Account;
 
-public class WalletAccount extends Account {
+public class WalletAccountInfo extends AccountInfo {
     // This class is just for demonstrating the design.
 }

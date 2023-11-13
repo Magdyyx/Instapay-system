@@ -1,6 +1,6 @@
 package instapay.Modules.Endpoints;
 
-import instapay.Model.UtilityBillsModels.UtilityBill;
+import instapay.Modules.Bill.UtilityBill;
 
 public interface BillingEndpoint {
     public UtilityBill getBill(int billId);
