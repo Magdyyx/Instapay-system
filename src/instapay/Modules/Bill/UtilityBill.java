@@ -1,4 +1,4 @@
-package instapay.Model.UtilityBillsModels;
+package instapay.Modules.Bill;
 
 import java.util.Random;
 
@@ -34,6 +34,16 @@ public abstract class UtilityBill {
     }
     public boolean IsPaid() {
         return isPaid;
+    }
+
+    @Override
+    public String toString() {
+        return "UtilityBill{" +
+                "billId=" + billId +
+                ", userId=" + userId +
+                ", isPaid=" + isPaid +
+                ", billAmount=" + billAmount +
+                '}';
     }
 
     public void payBill() {

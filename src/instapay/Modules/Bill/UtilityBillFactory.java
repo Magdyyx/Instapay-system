@@ -1,4 +1,4 @@
-package instapay.Factory;
+package instapay.Modules.Bill;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,10 @@ import java.util.Random;
 import java.util.function.Function;
 
 import instapay.Enums.BillsEnum;
-import instapay.Model.UtilityBillsModels.*;
+import instapay.Modules.Bill.ElectricityBill;
+import instapay.Modules.Bill.GasBill;
+import instapay.Modules.Bill.UtilityBill;
+import instapay.Modules.Bill.WaterBill;
 
 public class UtilityBillFactory {
     private Map<BillsEnum, Function<Integer, UtilityBill>> stateDictionary = new HashMap<>();

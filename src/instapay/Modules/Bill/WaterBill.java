@@ -1,4 +1,4 @@
-package instapay.Model.UtilityBillsModels;
+package instapay.Modules.Bill;
 
 public class WaterBill extends UtilityBill {
     public WaterBill(int userId) {
