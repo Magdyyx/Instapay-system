@@ -1,16 +1,24 @@
 package instapay.DataAccess.Models;
 
-public class ExternalAccount {
-    private String accountNumber;
-    private double balance;
+import instapay.Enums.MoneyProvider;
 
-    public ExternalAccount(String accountNumber, double balance) {
-        this.accountNumber = accountNumber;
+public class ExternalAccount {
+    private String providerHandle;
+    private double balance;
+    private MoneyProvider provider;
+
+    public ExternalAccount(String providerHandle, double balance, MoneyProvider provider) {
+        this.providerHandle = providerHandle;
         this.balance = balance;
+        this.provider = provider;
     }
 
-    public String getAccountNumber() {
-        return accountNumber;
+    public MoneyProvider getProvider() {
+        return provider;
+    }
+
+    public String getProviderHandle() {
+        return providerHandle;
     }
 
     public double getBalance() {

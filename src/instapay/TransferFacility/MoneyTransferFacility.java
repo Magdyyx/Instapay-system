@@ -1,13 +1,10 @@
 package instapay.TransferFacility;
 
-import instapay.Abstractions.BillingEndpoint;
+import instapay.Abstractions.*;
+import instapay.DataAccess.Repositories.InMemoryAccountRepository;
 import instapay.Endpoints.MockupBillingEndpoint;
-import instapay.Abstractions.ProviderEndpoint;
-import instapay.Abstractions.UserRepository;
-import instapay.Abstractions.UtilityBill;
 import instapay.DataAccess.Models.InstapayUser;
 import instapay.DataAccess.Repositories.InMemoryUserRepository;
-import instapay.Enums.BillsEnum;
 import instapay.Enums.MoneyProvider;
 
 import java.util.Optional;
@@ -19,31 +16,27 @@ public abstract class MoneyTransferFacility {
     public abstract ProviderEndpoint CreateProviderEndpoint(MoneyProvider provider);
 
     // This must be an atomic operation by the way. Not our concern right now.
-    public boolean TransferMoney(String senderAccountNumber, String receiverAccountNumber, int amount) {
-        Optional<InstapayUser> senderOptional = userRepository.getUserByAccountNumber(senderAccountNumber);
-        Optional<InstapayUser> receiverOptional = userRepository.getUserByAccountNumber(receiverAccountNumber);
-
-        if (senderOptional.isEmpty() || receiverOptional.isEmpty()) {
+    public boolean TransferMoney(String senderProviderHandle, String receiverProviderHandle
+            , MoneyProvider receiverProvider, int amount) {
+        Optional<InstapayUser> senderOptional = userRepository.getUserByProviderHandle(senderProviderHandle);
+        if (senderOptional.isEmpty()) {
             return false;
         }
 
-        InstapayUser sender = senderOptional.get();
-        InstapayUser receiver = receiverOptional.get();
-
-        ProviderEndpoint senderEndpoint = CreateProviderEndpoint(sender.getMoneyProvider());
-        if (!senderEndpoint.HasEnoughBalance(senderAccountNumber, amount)) {
+        ProviderEndpoint senderEndpoint = CreateProviderEndpoint(senderOptional.get().getMoneyProvider());
+        if (!senderEndpoint.HasEnoughBalance(senderProviderHandle, amount)) {
             return false; // Indicate error
         }
 
-        if (!senderEndpoint.Debit(senderAccountNumber, amount)) {
+        if (!senderEndpoint.Debit(senderProviderHandle, amount)) {
             return false;
         }
 
-        ProviderEndpoint receiverEndpoint = CreateProviderEndpoint(receiver.getMoneyProvider());
+        ProviderEndpoint receiverEndpoint = CreateProviderEndpoint(receiverProvider);
 
-        if (!receiverEndpoint.Credit(receiverAccountNumber, amount)) {
+        if (!receiverEndpoint.Credit(receiverProviderHandle, amount)) {
             // Retract the debit.
-            senderEndpoint.Credit(senderAccountNumber, amount);
+            senderEndpoint.Credit(senderProviderHandle, amount);
 
             return false;
         }
@@ -51,17 +44,29 @@ public abstract class MoneyTransferFacility {
         return true;
     }
 
-    public boolean TransferMoneyToInstapay(String senderAccountNumber, String receiverUsername, int amount) {
+    public boolean TransferMoney(String senderProviderHandle, String receiverProviderHandle, int amount) {
+        Optional<InstapayUser> receiverOptional = userRepository.getUserByProviderHandle(receiverProviderHandle);
+
+        if (receiverOptional.isEmpty()) {
+            return false;
+        }
+
+        InstapayUser receiver = receiverOptional.get();
+
+        return TransferMoney(senderProviderHandle, receiverProviderHandle, receiver.getMoneyProvider(), amount);
+    }
+
+    public boolean TransferMoneyToInstapay(String senderProviderHandle, String receiverUsername, int amount) {
         Optional<InstapayUser> receiverOptional = userRepository.getUserByUsername(receiverUsername);
         if (receiverOptional.isEmpty()) {
             return false; // Receiver not found.
         }
 
-        return TransferMoney(senderAccountNumber, receiverOptional.get().getAccountNumber(), amount);
+        return TransferMoney(senderProviderHandle, receiverOptional.get().getProviderHandle(), amount);
     }
 
-    public double InquireBalance(String accountNumber) {
-        Optional<InstapayUser> userOptional = userRepository.getUserByAccountNumber(accountNumber);
+    public double InquireBalance(String providerHandle) {
+        Optional<InstapayUser> userOptional = userRepository.getUserByProviderHandle(providerHandle);
         if (userOptional.isEmpty()) {
             // Indicate error; by throwing exception for example.
             return -1.0;
@@ -69,35 +74,35 @@ public abstract class MoneyTransferFacility {
 
         ProviderEndpoint endpoint = CreateProviderEndpoint(userOptional.get().getMoneyProvider());
 
-        return endpoint.GetBalance(accountNumber);
+        return endpoint.GetBalance(providerHandle);
     }
 
     public UtilityBill GetBill(int billId) {
         return billingEndpoint.getBill(billId);
     }
 
-    public boolean PayBill(String accountNumber, int billId) {
+    public boolean PayBill(String providerHandle, int billId) {
         UtilityBill billToPay = GetBill(billId);
 
         // Get user from Repo (receiver).
-        Optional<InstapayUser> userOptional = userRepository.getUserByAccountNumber(accountNumber);
+        Optional<InstapayUser> userOptional = userRepository.getUserByProviderHandle(providerHandle);
         if (userOptional.isEmpty()) {
             return false;
         }
 
         ProviderEndpoint payerEndpoint = CreateProviderEndpoint(userOptional.get().getMoneyProvider());
 
-        if (!payerEndpoint.HasEnoughBalance(accountNumber, billToPay.getBillAmount())) {
+        if (!payerEndpoint.HasEnoughBalance(providerHandle, billToPay.getBillAmount())) {
             return false; // Indicate error.
         }
 
-        if (!payerEndpoint.Debit(accountNumber, billToPay.getBillAmount())) {
+        if (!payerEndpoint.Debit(providerHandle, billToPay.getBillAmount())) {
             return false;
         }
 
         if (!billingEndpoint.payBill(billId)) {
             // Retract the debit.
-            payerEndpoint.Credit(accountNumber, billToPay.getBillAmount());
+            payerEndpoint.Credit(providerHandle, billToPay.getBillAmount());
 
             return false;
         }
@@ -105,8 +110,8 @@ public abstract class MoneyTransferFacility {
         return true;
     }
 
-    public boolean VerifyAccount(MoneyProvider provider, String accountNumber) {
+    public boolean VerifyAccount(MoneyProvider provider, String providerHandle) {
         ProviderEndpoint providerEndpoint = CreateProviderEndpoint(provider);
-        return providerEndpoint.VerifyAccount(accountNumber);
+        return providerEndpoint.VerifyAccount(providerHandle);
     }
 }

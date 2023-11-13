@@ -1,9 +1,7 @@
 package instapay;
 
-import instapay.Abstractions.BillRepository;
 import instapay.Abstractions.UserRepository;
 import instapay.DataAccess.Models.InstapayUser;
-import instapay.DataAccess.Repositories.InMemoryBillRepository;
 import instapay.DataAccess.Repositories.InMemoryUserRepository;
 import instapay.TransferFacility.InstapayTransferFacility;
 import instapay.TransferFacility.MoneyTransferFacility;
@@ -15,13 +13,13 @@ public class Main {
 
         InstapayUser currentlyLoggedInUser = users.getUserByUsername("Kilany").get();
 
-        double userBalance = facility.InquireBalance(currentlyLoggedInUser.getAccountNumber());
+        double userBalance = facility.InquireBalance(currentlyLoggedInUser.getProviderHandle());
         System.out.println(currentlyLoggedInUser + " | Balance: " + userBalance);
 
-        facility.PayBill(currentlyLoggedInUser.getAccountNumber(), 1);
-        facility.PayBill(currentlyLoggedInUser.getAccountNumber(), 3);
+        facility.PayBill(currentlyLoggedInUser.getProviderHandle(), 1);
+        facility.PayBill(currentlyLoggedInUser.getProviderHandle(), 3);
 
-        userBalance = facility.InquireBalance(currentlyLoggedInUser.getAccountNumber());
+        userBalance = facility.InquireBalance(currentlyLoggedInUser.getProviderHandle());
         System.out.println(currentlyLoggedInUser + " | Balance: " + userBalance);
 
 
@@ -35,10 +33,10 @@ public class Main {
         System.out.println("Before Transfer_____");
         System.out.println(facility.InquireBalance("01213647953"));
         System.out.println();
-        facility.TransferMoney(currentlyLoggedInUser.getAccountNumber(), "01213647953", 100);
+        facility.TransferMoney(currentlyLoggedInUser.getProviderHandle(), "01213647953", 100);
 
         System.out.println("After Transfer_____");
-        System.out.println(facility.InquireBalance(currentlyLoggedInUser.getAccountNumber()));
+        System.out.println(facility.InquireBalance(currentlyLoggedInUser.getProviderHandle()));
         System.out.println(facility.InquireBalance("01213647953"));
     }
 }
