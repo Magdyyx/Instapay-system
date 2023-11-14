@@ -1,6 +1,9 @@
 package instapay.Modules.Endpoints;
 
+import instapay.Enums.MoneyProvider;
+
 public class MockupCIBEndpoint extends ProviderEndpoint {
+    private static final MoneyProvider PROVIDER = MoneyProvider.CIBBank;
 
     @Override
     public boolean Credit(String providerAccountIdentifier, double amount) {

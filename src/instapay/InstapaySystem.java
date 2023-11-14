@@ -64,6 +64,7 @@ public class InstapaySystem {
             return false;
         }
 
+        // Interacting with the ExternalAccounts is questionable though. ???
         if (!accounts.getAccountBy(user.getProviderAccountIdentifier()).isPresent()) {
             return false;
         }

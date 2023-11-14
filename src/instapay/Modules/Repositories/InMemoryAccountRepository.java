@@ -33,6 +33,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     @Override
     public void updateAccount(ExternalAccount account) {
         Optional<ExternalAccount> updateCandidate = accounts.stream()
+                .filter(a -> a.getProvider().equals(account.getProvider()))
                 .filter(a -> a.getProviderAccountIdentifier().equals(account.getProviderAccountIdentifier()))
                 .findFirst();
 
@@ -43,9 +44,10 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<ExternalAccount> getAccountBy(String providerAccountIdentifier) {
+    public Optional<ExternalAccount> getAccountBy(String providerAccountIdentifier, MoneyProvider provider) {
 
         return accounts.stream()
+                .filter(a -> a.getProvider().equals(provider))
                 .filter(a -> a.getProviderAccountIdentifier().equals(providerAccountIdentifier))
                 .findFirst();
     }
