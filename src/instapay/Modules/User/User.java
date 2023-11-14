@@ -2,6 +2,7 @@ package instapay.Modules.User;
 
 import instapay.Enums.MoneyProvider;
 import instapay.Modules.Account.AccountInfo;
+import instapay.Modules.Account.BankAccountInfo;
 
 public class User {
     private String username;
@@ -41,14 +42,13 @@ public class User {
         return providerAccountIdentifier;
     }
 
+    public boolean accountIsBank() {
+        return accountInfo instanceof BankAccountInfo;
+    }
+
     @Override
     public String toString() {
-        return "InstapayUser{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", phone='" + phone + '\'' +
-                ", moneyProvider=" + moneyProvider +
-                ", providerAccountIdentifier='" + providerAccountIdentifier + '\'' +
-                '}';
+        return String.format("Username: %-15s | Phone number: %-15s | Account: %-10s %s",
+                username, phone, moneyProvider.toString(), providerAccountIdentifier);
     }
 }

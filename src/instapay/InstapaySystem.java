@@ -1,5 +1,6 @@
 package instapay;
 
+import instapay.Enums.UserOperation;
 import instapay.Modules.Repositories.AccountRepository;
 import instapay.Modules.Repositories.InMemoryAccountRepository;
 import instapay.Modules.Repositories.InMemoryUserRepository;
@@ -7,6 +8,11 @@ import instapay.Modules.Repositories.UserRepository;
 import instapay.Modules.TransferFacility.InstapayTransferFacility;
 import instapay.Modules.TransferFacility.MoneyTransferFacility;
 import instapay.Modules.User.User;
+import instapay.Modules.ViewModels.BillViewModel;
+import instapay.Modules.Bill.UtilityBill;
+import instapay.Modules.ViewModels.MoneyTransferViewModel;
+
+import java.util.Optional;
 
 public class InstapaySystem {
     private User currentlyLoggedInUser;
@@ -28,6 +34,12 @@ public class InstapaySystem {
                         System.out.println("Registration successful!");
                         // Add User to InMemoryUserRepository
                         users.addUser(userData);
+
+                        // Log the user in.
+                        currentlyLoggedInUser = userData;
+
+                        // Redirect to home.
+                        homeMenu();
                     } else {
                         System.out.println("Invalid registration or Account already registered!");
                     }
@@ -36,8 +48,11 @@ public class InstapaySystem {
                 case 2:
                     userData = Presenter.loginUser();
                     if (verifyLogin(userData)) {
-                        System.out.println("Login successfull!\nWelcome " + currentlyLoggedInUser.getUsername());
                         currentlyLoggedInUser = users.getUserByUsername(userData.getUsername()).get();
+                        System.out.println("Login successfull!\nWelcome " + currentlyLoggedInUser.getUsername());
+
+                        // Redirect to home.
+                        homeMenu();
                     } else {
                         System.out.println("Invalid credentials!");
                     }
@@ -66,7 +81,11 @@ public class InstapaySystem {
 
         // Interacting with the ExternalAccounts is questionable though. (???)
         // I made each endpoint actually do this check for you. Now you can just use Facility.Verify().
-        if (!accounts.getAccountBy(user.getProviderAccountIdentifier()).isPresent()) {
+//        if (!accounts.getAccountBy(user.getProviderAccountIdentifier()).isPresent()) {
+//            return false;
+//        }
+
+        if (!facility.VerifyAccount(user.getMoneyProvider(), user.getProviderAccountIdentifier())) {
             return false;
         }
 
@@ -74,16 +93,88 @@ public class InstapaySystem {
     }
 
     private boolean verifyLogin(User user) {
-        // DANGER - calling get before checking for presence throws an exception if empty.
-        User foundUser = users.getUserByUsername(user.getUsername()).get();
-        if (foundUser == null) {
+        Optional<User> foundUser = users.getUserByUsername(user.getUsername());
+        if (foundUser.isEmpty()) {
             return false;
         }
 
-        if (foundUser.getPassword() != user.getPassword()) {
+        if (!foundUser.get().getPassword().equals(user.getPassword())) {
             return false;
         }
 
         return true;
+    }
+
+    private void homeMenu() {
+        while (true) {
+            Presenter.showUserInfo(currentlyLoggedInUser);
+            UserOperation operation = Presenter.promptUserOperations();
+            switch (operation) {
+                case BalanceQuery -> balanceQuery();
+                case PayBill -> payBill();
+                case TransferToInstapay, TransferToBank, TransferToWallet -> transferMoney(operation);
+                case Logout -> {
+                    return;
+                }
+                default -> {
+                }
+            }
+        }
+    }
+
+    private void transferMoney(UserOperation operation) {
+        if (operation == UserOperation.TransferToBank && !currentlyLoggedInUser.accountIsBank()) {
+            System.out.println("Transfers to bank accounts are only permitted through a bank account.");
+            return;
+        }
+
+        MoneyTransferViewModel transferInfo;
+        boolean response;
+
+        if (operation == UserOperation.TransferToInstapay) {
+            transferInfo = Presenter.promptForInstapayTransferInfo();
+
+            response = facility.TransferMoneyToInstapay(currentlyLoggedInUser.getProviderAccountIdentifier(),
+                    transferInfo.getReceiver(), transferInfo.getAmount());
+        } else {
+            transferInfo = Presenter.promptForTransferInfo();
+
+            response = facility.TransferMoney(currentlyLoggedInUser.getProviderAccountIdentifier(),
+                    transferInfo.getReceiver(), transferInfo.getProvider(), transferInfo.getAmount());
+        }
+
+        if (!response) {
+            System.out.println("Failed to complete the transaction");
+            System.out.println(); // TODO - Print response's error message.
+        }
+
+        System.out.println("Transferred successfully. Transaction is complete.");
+    }
+
+    private void payBill() {
+        BillViewModel billInfo = Presenter.promptForBillInfo();
+        UtilityBill bill = facility.GetBill(billInfo.getBillId(), billInfo.getType());
+
+        if (bill == null) {
+            // TODO - Replace with response error message.
+            System.out.println("Bill not found.");
+            return;
+        }
+
+        boolean payBill = Presenter.promptPayBill(bill);
+        if (!payBill) {
+            return;
+        }
+
+        if (!facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), billInfo.getBillId(), billInfo.getType())) {
+            // TODO - Indicate error.
+        }
+
+        System.out.println("Bill payment successful.");
+    }
+
+    private void balanceQuery() {
+        double balance = facility.InquireBalance(currentlyLoggedInUser.getProviderAccountIdentifier());
+        Presenter.displayBalance(balance);
     }
 }

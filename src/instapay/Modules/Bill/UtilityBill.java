@@ -38,12 +38,7 @@ public abstract class UtilityBill {
 
     @Override
     public String toString() {
-        return "UtilityBill{" +
-                "billId=" + billId +
-                ", userId=" + userId +
-                ", isPaid=" + isPaid +
-                ", billAmount=" + billAmount +
-                '}';
+        return String.format("Bill Number: %d | Cost: %1$,.2f", billId, billAmount);
     }
 
     public void payBill() {

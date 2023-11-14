@@ -19,7 +19,7 @@ public abstract class MoneyTransferFacility {
 
     // This must be an atomic operation by the way. Not our concern right now.
     public boolean TransferMoney(String senderProviderAccountIdentifier, String receiverProviderAccountIdentifier
-            , MoneyProvider receiverProvider, int amount) {
+            , MoneyProvider receiverProvider, double amount) {
         Optional<User> senderOptional = userRepository.getUserByProviderAccountIdentifier(senderProviderAccountIdentifier);
         if (senderOptional.isEmpty()) {
             return false;
@@ -46,8 +46,8 @@ public abstract class MoneyTransferFacility {
         return true;
     }
 
-    public boolean TransferMoney(String senderProviderAccountIdentifier, String receiverproviderAccountIdentifier, int amount) {
-        Optional<User> receiverOptional = userRepository.getUserByProviderAccountIdentifier(receiverproviderAccountIdentifier);
+    public boolean TransferMoney(String senderProviderAccountIdentifier, String receiverProviderAccountIdentifier, double amount) {
+        Optional<User> receiverOptional = userRepository.getUserByProviderAccountIdentifier(receiverProviderAccountIdentifier);
 
         if (receiverOptional.isEmpty()) {
             return false;
@@ -55,10 +55,10 @@ public abstract class MoneyTransferFacility {
 
         User receiver = receiverOptional.get();
 
-        return TransferMoney(senderProviderAccountIdentifier, receiverproviderAccountIdentifier, receiver.getMoneyProvider(), amount);
+        return TransferMoney(senderProviderAccountIdentifier, receiverProviderAccountIdentifier, receiver.getMoneyProvider(), amount);
     }
 
-    public boolean TransferMoneyToInstapay(String senderProviderAccountIdentifier, String receiverUsername, int amount) {
+    public boolean TransferMoneyToInstapay(String senderProviderAccountIdentifier, String receiverUsername, double amount) {
         Optional<User> receiverOptional = userRepository.getUserByUsername(receiverUsername);
         if (receiverOptional.isEmpty()) {
             return false; // Receiver not found.
