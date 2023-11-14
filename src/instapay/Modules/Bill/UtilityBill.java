@@ -38,7 +38,7 @@ public abstract class UtilityBill {
 
     @Override
     public String toString() {
-        return String.format("Bill Number: %d | Cost: %1$,.2f", billId, billAmount);
+        return String.format("Bill Number: %d | Cost: %,.2f", billId, billAmount);
     }
 
     public void payBill() {

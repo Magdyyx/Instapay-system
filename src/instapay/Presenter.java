@@ -103,7 +103,7 @@ public class Presenter {
     }
 
     public static void displayBalance(double balance) {
-        System.out.printf("Your balance is: %1$,.2f", balance);
+        System.out.printf("Your balance is: %1$,.2f\n", balance);
     }
 
     public static BillViewModel promptForBillInfo() {
