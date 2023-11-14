@@ -72,6 +72,7 @@ public class InstapaySystem {
     }
 
     private boolean verifyLogin(User user) {
+        // DANGER - calling get before checking for presence throws an exception if empty.
         User foundUser = users.getUserByUsername(user.getUsername()).get();
         if (foundUser == null) {
             return false;
