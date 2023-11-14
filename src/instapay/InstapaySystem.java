@@ -64,7 +64,8 @@ public class InstapaySystem {
             return false;
         }
 
-        // Interacting with the ExternalAccounts is questionable though. ???
+        // Interacting with the ExternalAccounts is questionable though. (???)
+        // I made each endpoint actually do this check for you. Now you can just use Facility.Verify().
         if (!accounts.getAccountBy(user.getProviderAccountIdentifier()).isPresent()) {
             return false;
         }

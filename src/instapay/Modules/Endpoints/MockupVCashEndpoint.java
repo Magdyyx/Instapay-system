@@ -5,8 +5,8 @@ import instapay.Modules.Account.ExternalAccount;
 
 import java.util.Optional;
 
-public class MockupAlahlyEndpoint extends ProviderEndpoint {
-    private static final MoneyProvider PROVIDER = MoneyProvider.Alahly;
+public class MockupVCashEndpoint extends ProviderEndpoint {
+    private static final MoneyProvider PROVIDER = MoneyProvider.VCash;
 
     @Override
     public boolean Credit(String providerAccountIdentifier, double amount) {

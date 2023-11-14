@@ -49,7 +49,8 @@ public class MockupFawryEndpoint extends ProviderEndpoint {
 
     @Override
     public boolean VerifyAccount(String providerAccountIdentifier) {
-        return true;
+        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
+        return accountOptional.isPresent();
     }
 
 }

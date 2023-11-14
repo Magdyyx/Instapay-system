@@ -30,6 +30,8 @@ public class InstapayTransferFacility extends MoneyTransferFacility {
                 return new MockupCIBEndpoint();
             case Alahly:
                 return new MockupAlahlyEndpoint();
+            case VCash:
+                return new MockupVCashEndpoint();
             default:
                 return null;
         }

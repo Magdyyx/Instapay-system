@@ -1,37 +1,56 @@
 package instapay.Modules.Endpoints;
 
 import instapay.Enums.MoneyProvider;
+import instapay.Modules.Account.ExternalAccount;
+
+import java.util.Optional;
 
 public class MockupCIBEndpoint extends ProviderEndpoint {
     private static final MoneyProvider PROVIDER = MoneyProvider.CIBBank;
 
     @Override
     public boolean Credit(String providerAccountIdentifier, double amount) {
-        // TODO Auto-generated method stub
-        return false;
+        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
+        if (accountOptional.isPresent()) {
+            ExternalAccount toUpdate = accountOptional.get();
+            toUpdate.setBalance(toUpdate.getBalance() + amount);
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean Debit(String providerAccountIdentifier, double amount) {
-        // TODO Auto-generated method stub
-        return false;
+        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
+        if (accountOptional.isPresent()) {
+            ExternalAccount toUpdate = accountOptional.get();
+            toUpdate.setBalance(toUpdate.getBalance() - amount);
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean HasEnoughBalance(String providerAccountIdentifier, double amount) {
-        // TODO Auto-generated method stub
-        return false;
+        return accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER)
+                .filter(account -> account.getBalance() >= amount)
+                .isPresent();
     }
 
     @Override
     public double GetBalance(String providerAccountIdentifier) {
-        // TODO Auto-generated method stub
-        return 0;
+        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
+        return accountOptional.map(ExternalAccount::getBalance).orElse(0.0);
     }
 
     @Override
     public boolean VerifyAccount(String providerAccountIdentifier) {
-        return true;
+        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
+        return accountOptional.isPresent();
     }
 
 }
