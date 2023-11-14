@@ -3,20 +3,27 @@ package instapay.Modules.Repositories;
 import instapay.Modules.Account.ExternalAccount;
 import instapay.Enums.MoneyProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class InMemoryAccountRepository implements AccountRepository {
 
-    private static final List<ExternalAccount> accounts = List.of(
-            new ExternalAccount("01013647953", 670, MoneyProvider.Fawry),
-            new ExternalAccount("01213647953", 7000, MoneyProvider.Fawry),
-            new ExternalAccount("IPAN123", 50, MoneyProvider.Alahly),
-            new ExternalAccount("01513647953", 170, MoneyProvider.Fawry),
-            new ExternalAccount("IPAN111", 778, MoneyProvider.Alahly),
-            new ExternalAccount("IPAN222", 90, MoneyProvider.Alahly),
-            new ExternalAccount("IPAN333", 61370, MoneyProvider.Alahly)
-    );
+    private static final List<ExternalAccount> accounts = init();
+
+    private static List<ExternalAccount> init() {
+        ArrayList<ExternalAccount> accounts = new ArrayList<>();
+        accounts.add(new ExternalAccount("01013647953", 670, MoneyProvider.Fawry));
+        accounts.add(new ExternalAccount("01213647953", 7000, MoneyProvider.Fawry));
+        accounts.add(new ExternalAccount("IPAN123", 50, MoneyProvider.Alahly));
+        accounts.add(new ExternalAccount("01513647953", 170, MoneyProvider.Fawry));
+        accounts.add(new ExternalAccount("IPAN111", 778, MoneyProvider.Alahly));
+        accounts.add(new ExternalAccount("IPAN222", 90, MoneyProvider.Alahly));
+        accounts.add(new ExternalAccount("IPAN333", 61370, MoneyProvider.Alahly));
+        accounts.add(new ExternalAccount("IPAN444", 7500, MoneyProvider.Alahly));
+
+        return accounts;
+    }
 
     @Override
     public void addAccount(ExternalAccount account) {
