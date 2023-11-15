@@ -5,6 +5,7 @@ import instapay.Modules.Account.ExternalAccount;
 import instapay.Modules.Response.Response;
 
 import java.util.Optional;
+import java.util.Random;
 
 public class MockupFawryEndpoint extends ProviderEndpoint {
     private static final MoneyProvider PROVIDER = MoneyProvider.Fawry;
@@ -68,7 +69,10 @@ public class MockupFawryEndpoint extends ProviderEndpoint {
     public Response VerifyAccount(String providerAccountIdentifier, String phoneNumber) {
         Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
 
-        return new Response(true, accountOptional.isPresent());
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+
+        return new Response(true, otp);
     }
 
 }

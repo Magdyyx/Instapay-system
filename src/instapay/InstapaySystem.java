@@ -93,6 +93,8 @@ public class InstapaySystem {
             return false;
         }
 
+        int otp = response.to(Integer.class);
+
         return true;
     }
 
