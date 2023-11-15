@@ -5,6 +5,7 @@ import instapay.Modules.Account.ExternalAccount;
 import instapay.Modules.Response.Response;
 
 import java.util.Optional;
+import java.util.Random;
 
 public class MockupCIBEndpoint extends ProviderEndpoint {
     private static final MoneyProvider PROVIDER = MoneyProvider.CIBBank;
@@ -72,7 +73,10 @@ public class MockupCIBEndpoint extends ProviderEndpoint {
             // true;
         }
 
-        return new Response(true, accountOptional.isPresent());
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+
+        return new Response(accountOptional.isPresent(), otp);
     }
 
 }

@@ -72,7 +72,7 @@ public class MockupFawryEndpoint extends ProviderEndpoint {
         Random random = new Random();
         int otp = 100000 + random.nextInt(900000);
 
-        return new Response(true, otp);
+        return new Response(accountOptional.isPresent(), otp);
     }
 
 }
