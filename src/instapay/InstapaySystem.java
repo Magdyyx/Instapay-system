@@ -87,9 +87,8 @@ public class InstapaySystem {
 //            return false;
 //        }
 
-        // TODO - Call the other verify method if the user.accountIsBank.
-
-        Response response = facility.VerifyAccount(user.getMoneyProvider(), user.getProviderAccountIdentifier());
+        Response response = facility.VerifyAccount(
+                user.getMoneyProvider(), user.getProviderAccountIdentifier(), user.getPhone());
 
         if (!response.succeeded()) {
             System.out.println(response.getErrorMessage());

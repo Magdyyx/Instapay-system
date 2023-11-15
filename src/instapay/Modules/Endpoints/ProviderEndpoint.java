@@ -15,5 +15,5 @@ public abstract class ProviderEndpoint {
 
     public abstract Response GetBalance(String providerAccountIdentifier);
 
-    public abstract Response VerifyAccount(String providerAccountIdentifier);
+    public abstract Response VerifyAccount(String providerAccountIdentifier, String phoneNumber);
 }

@@ -107,10 +107,8 @@ public abstract class MoneyTransferFacility {
         return new Response(true);
     }
 
-    public Response VerifyAccount(MoneyProvider provider, String providerAccountIdentifier) {
+    public Response VerifyAccount(MoneyProvider provider, String providerAccountIdentifier, String phoneNumber) {
         ProviderEndpoint providerEndpoint = CreateProviderEndpoint(provider);
-        return providerEndpoint.VerifyAccount(providerAccountIdentifier);
+        return providerEndpoint.VerifyAccount(providerAccountIdentifier, phoneNumber);
     }
-
-    // TODO - Expose new method from TransferFacility : VerifyAccount(sameParam, sameParam, phoneNumber)
 }

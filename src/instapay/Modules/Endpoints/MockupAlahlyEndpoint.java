@@ -65,8 +65,12 @@ public class MockupAlahlyEndpoint extends ProviderEndpoint {
     }
 
     @Override
-    public Response VerifyAccount(String providerAccountIdentifier) {
+    public Response VerifyAccount(String providerAccountIdentifier, String phoneNumber) {
         Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
+
+        if (phoneNumber != null /* is in the company's database*/) {
+            // true;
+        }
 
         return new Response(true, accountOptional.isPresent());
     }
