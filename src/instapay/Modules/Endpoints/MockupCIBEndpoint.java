@@ -2,6 +2,7 @@ package instapay.Modules.Endpoints;
 
 import instapay.Enums.MoneyProvider;
 import instapay.Modules.Account.ExternalAccount;
+import instapay.Modules.Response.Response;
 
 import java.util.Optional;
 
@@ -9,48 +10,65 @@ public class MockupCIBEndpoint extends ProviderEndpoint {
     private static final MoneyProvider PROVIDER = MoneyProvider.CIBBank;
 
     @Override
-    public boolean Credit(String providerAccountIdentifier, double amount) {
+    public Response Credit(String providerAccountIdentifier, double amount) {
         Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
         if (accountOptional.isPresent()) {
             ExternalAccount toUpdate = accountOptional.get();
             toUpdate.setBalance(toUpdate.getBalance() + amount);
 
-            return true;
+            return new Response(true);
         } else {
-            return false;
+            return new Response(false, String.format("Account: %s was not found.", providerAccountIdentifier));
         }
     }
 
     @Override
-    public boolean Debit(String providerAccountIdentifier, double amount) {
+    public Response Debit(String providerAccountIdentifier, double amount) {
         Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
         if (accountOptional.isPresent()) {
             ExternalAccount toUpdate = accountOptional.get();
+
+            if (toUpdate.getBalance() - amount < 0.0) {
+                return new
+                        Response(false,
+                        String.format("Account: %s does not have enough balance.", providerAccountIdentifier));
+            }
+
             toUpdate.setBalance(toUpdate.getBalance() - amount);
 
-            return true;
+            return new Response(true);
         } else {
-            return false;
+            return new Response(false, String.format("Account: %s was not found.", providerAccountIdentifier));
         }
     }
 
     @Override
-    public boolean HasEnoughBalance(String providerAccountIdentifier, double amount) {
-        return accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER)
-                .filter(account -> account.getBalance() >= amount)
-                .isPresent();
+    public Response HasEnoughBalance(String providerAccountIdentifier, double amount) {
+        Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
+
+        if (accountOptional.isEmpty()) {
+            return new Response(false, String.format("Account: %s was not found.", providerAccountIdentifier));
+        }
+
+        return new Response(true, (accountOptional.get().getBalance() >= amount));
     }
 
     @Override
-    public double GetBalance(String providerAccountIdentifier) {
+    public Response GetBalance(String providerAccountIdentifier) {
         Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
-        return accountOptional.map(ExternalAccount::getBalance).orElse(0.0);
+
+        if (accountOptional.isEmpty()) {
+            return new Response(false, String.format("Account: %s was not found.", providerAccountIdentifier));
+        }
+
+        return new Response(true, accountOptional.get().getBalance());
     }
 
     @Override
-    public boolean VerifyAccount(String providerAccountIdentifier) {
+    public Response VerifyAccount(String providerAccountIdentifier) {
         Optional<ExternalAccount> accountOptional = accountRepository.getAccountBy(providerAccountIdentifier, PROVIDER);
-        return accountOptional.isPresent();
+
+        return new Response(true, accountOptional.isPresent());
     }
 
 }

@@ -5,6 +5,7 @@ import instapay.Modules.Repositories.AccountRepository;
 import instapay.Modules.Repositories.InMemoryAccountRepository;
 import instapay.Modules.Repositories.InMemoryUserRepository;
 import instapay.Modules.Repositories.UserRepository;
+import instapay.Modules.Response.Response;
 import instapay.Modules.TransferFacility.InstapayTransferFacility;
 import instapay.Modules.TransferFacility.MoneyTransferFacility;
 import instapay.Modules.User.User;
@@ -13,6 +14,7 @@ import instapay.Modules.Bill.UtilityBill;
 import instapay.Modules.ViewModels.MoneyTransferViewModel;
 
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class InstapaySystem {
     private User currentlyLoggedInUser;
@@ -85,7 +87,12 @@ public class InstapaySystem {
 //            return false;
 //        }
 
-        if (!facility.VerifyAccount(user.getMoneyProvider(), user.getProviderAccountIdentifier())) {
+        // TODO - Call the other verify method if the user.accountIsBank.
+
+        Response response = facility.VerifyAccount(user.getMoneyProvider(), user.getProviderAccountIdentifier());
+
+        if (!response.succeeded()) {
+            System.out.println(response.getErrorMessage());
             return false;
         }
 
@@ -129,7 +136,7 @@ public class InstapaySystem {
         }
 
         MoneyTransferViewModel transferInfo;
-        boolean response;
+        Response response;
 
         if (operation == UserOperation.TransferToInstapay) {
             transferInfo = Presenter.promptForInstapayTransferInfo();
@@ -143,9 +150,9 @@ public class InstapaySystem {
                     transferInfo.getReceiver(), transferInfo.getProvider(), transferInfo.getAmount());
         }
 
-        if (!response) {
+        if (!response.succeeded()) {
+            System.out.println(response.getErrorMessage());
             System.out.println("Failed to complete the transaction");
-            System.out.println(); // TODO - Print response's error message.
         }
 
         System.out.println("Transferred successfully. Transaction is complete.");
@@ -153,28 +160,37 @@ public class InstapaySystem {
 
     private void payBill() {
         BillViewModel billInfo = Presenter.promptForBillInfo();
-        UtilityBill bill = facility.GetBill(billInfo.getBillId(), billInfo.getType());
 
-        if (bill == null) {
-            // TODO - Replace with response error message.
-            System.out.println("Bill not found.");
+        Response response = facility.GetBill(billInfo.getBillId(), billInfo.getType());
+
+        if (!response.succeeded()) {
+            System.out.println(response.getErrorMessage());
             return;
         }
+
+        UtilityBill bill = response.to(UtilityBill.class);
 
         boolean payBill = Presenter.promptPayBill(bill);
         if (!payBill) {
             return;
         }
 
-        if (!facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), billInfo.getBillId(), billInfo.getType())) {
-            // TODO - Indicate error.
+        response = facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), billInfo.getBillId(), billInfo.getType());
+        if (!response.succeeded()) {
+            System.out.println(response.getErrorMessage());
         }
 
         System.out.println("Bill payment successful.");
     }
 
     private void balanceQuery() {
-        double balance = facility.InquireBalance(currentlyLoggedInUser.getProviderAccountIdentifier());
-        Presenter.displayBalance(balance);
+        Response response = facility.InquireBalance(currentlyLoggedInUser.getProviderAccountIdentifier());
+
+        if (!response.succeeded()) {
+            System.out.println(response.getErrorMessage());
+            return;
+        }
+
+        Presenter.displayBalance(response.to(Double.class));
     }
 }
