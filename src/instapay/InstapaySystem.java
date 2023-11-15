@@ -43,7 +43,7 @@ public class InstapaySystem {
                         // Redirect to home.
                         homeMenu();
                     } else {
-                        System.out.println("Invalid registration or Account already registered!");
+                        System.out.println("Registeration cancelled!");
                     }
 
                     break;
@@ -71,21 +71,19 @@ public class InstapaySystem {
 
     private boolean verifyRegistration(User user) {
         if (users.getUserByUsername(user.getUsername()).isPresent()) {
-            return false; // Account already registered
-        }
-
-        // verify password
-        // verify phone
-
-        if (user.getMoneyProvider() == null) {
+            System.out.println("Username already exists!");
             return false;
         }
 
-        // Interacting with the ExternalAccounts is questionable though. (???)
-        // I made each endpoint actually do this check for you. Now you can just use Facility.Verify().
-//        if (!accounts.getAccountBy(user.getProviderAccountIdentifier()).isPresent()) {
-//            return false;
-//        }
+        if (!user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")) {
+            System.out.println("Please use a strong password!");
+            return false;
+        }
+
+        if (user.getMoneyProvider() == null) {
+            System.out.println("Please select a valid money provider!");
+            return false;
+        }
 
         Response response = facility.VerifyAccount(
                 user.getMoneyProvider(), user.getProviderAccountIdentifier(), user.getPhone());
@@ -120,6 +118,8 @@ public class InstapaySystem {
                 case PayBill -> payBill();
                 case TransferToInstapay, TransferToBank, TransferToWallet -> transferMoney(operation);
                 case Logout -> {
+                    // remove currently logged in user
+                    currentlyLoggedInUser = null;
                     return;
                 }
                 default -> {
@@ -174,7 +174,8 @@ public class InstapaySystem {
             return;
         }
 
-        response = facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), billInfo.getBillId(), billInfo.getType());
+        response = facility.PayBill(currentlyLoggedInUser.getProviderAccountIdentifier(), billInfo.getBillId(),
+                billInfo.getType());
         if (!response.succeeded()) {
             System.out.println(response.getErrorMessage());
         }
