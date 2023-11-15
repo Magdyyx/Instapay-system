@@ -198,4 +198,10 @@ public class Presenter {
 
         return transferInfo;
     }
+    public static int promptOTP(int otp) {
+        System.out.println("Your OTP is " + otp);
+        System.out.println("Enter OTP: ");
+        int otpEntered = Integer.parseInt(scanner.nextLine());
+        return otpEntered;
+    }
 }

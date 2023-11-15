@@ -93,7 +93,12 @@ public class InstapaySystem {
             return false;
         }
 
+
         int otp = response.to(Integer.class);
+        if (Presenter.promptOTP(otp) != otp) {
+            System.out.println("OTP verification failed!");
+            return false;
+        }
 
         return true;
     }
